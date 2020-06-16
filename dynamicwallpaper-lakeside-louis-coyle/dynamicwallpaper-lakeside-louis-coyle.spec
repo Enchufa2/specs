@@ -4,7 +4,7 @@
 
 Name:           dynamicwallpaper-lakeside-louis-coyle
 Version:        0
-Release:        1.%{git_date}git%{git_short}%{?dist}
+Release:        2.%{git_date}git%{git_short}%{?dist}
 Summary:        Dynamic wallpaper for KDE Plasma
 BuildArch:      noarch
 
@@ -25,6 +25,7 @@ Wallpaper based on Louis Coyle's dynamic wallpaper for MacOS.
 
 %install
 install -d -m 0755 %{buildroot}%{_datadir}/dynamicwallpapers/lakeside
+sed -i '/"Id":/c\        "Id": "lakeside",' metadata.json
 cp -r metadata.json contents %{buildroot}%{_datadir}/dynamicwallpapers/lakeside
 
 %files
