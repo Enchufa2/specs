@@ -1,6 +1,6 @@
 Name:           plasma5-wallpapers-dynamic
 Version:        2.7.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Dynamic wallpaper plugin for KDE Plasma
 
 License:        GPLv3 and LGPLv3 and MIT
@@ -17,6 +17,7 @@ BuildRequires:  kf5-plasma-devel
 BuildRequires:  kf5-ki18n-devel
 BuildRequires:  kf5-kio-devel
 BuildRequires:  desktop-file-utils
+Recommends:     dynamicwallpaper-lakeside-louis-coyle
 
 %description
 A simple dynamic wallpaper plugin for KDE Plasma.
