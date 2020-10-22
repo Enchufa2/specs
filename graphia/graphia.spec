@@ -1,6 +1,6 @@
 Name:           graphia
 Version:        2.0
-Release:        1%{?dist}
+Release:        1%{?dist}%{?buildtag}
 Summary:        A visualisation tool for the creation and analysis of graphs
 
 License:        GPLv3
