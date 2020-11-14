@@ -2,7 +2,7 @@
 
 Name:           plasma-%{component}
 Version:        3.3.5
-Release:        1%{?dist}%{?buildtag}
+Release:        1%{?dist}
 Summary:        Dynamic wallpaper plugin for KDE Plasma
 
 License:        GPLv3 and LGPLv3 and MIT
@@ -20,13 +20,54 @@ BuildRequires:  kf5-ki18n-devel
 BuildRequires:  libexif-devel
 BuildRequires:  libheif-devel
 BuildRequires:  desktop-file-utils
-Recommends:     dynamicwallpaper-lakeside-louis-coyle
+Recommends:     %{name}-builder
 
 %description
 A simple dynamic wallpaper plugin for KDE Plasma.
 
+%package        devel
+Summary:        Development headers and libraries for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%description    devel
+This package contains the development headers and libraries.
+
+%package        builder
+Summary:        Wallpaper builder for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%description    builder
+Command-line utility to build dynamic wallpapers.
+
+%package        builder-bash-completion
+Summary:        Bash completion support for %{name}-builder
+BuildArch:      noarch
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       bash bash-completion
+
+%description    builder-bash-completion
+Files needed to support bash completion.
+
+%package        builder-fish-completion
+Summary:        Fish completion support for %{name}-builder
+BuildArch:      noarch
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       fish
+
+%description    builder-fish-completion
+Files needed to support fish completion.
+
+%package        builder-zsh-completion
+Summary:        Zsh completion support for %{name}-builder
+BuildArch:      noarch
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       zsh
+
+%description    builder-zsh-completion
+Files needed to support zsh completion.
+
 %prep
-%autosetup -p1
+%autosetup -n plasma5-%{component}-%{version}
 
 %build
 %cmake -B build \
@@ -38,16 +79,37 @@ A simple dynamic wallpaper plugin for KDE Plasma.
 
 %install
 %make_install -C build
-%find_lang plasma_wallpaper_com.github.zzag.wallpaper
-desktop-file-validate %{buildroot}/%{_datadir}/kservices5/plasma-wallpaper-com.github.zzag.wallpaper.desktop
+%find_lang plasma_wallpaper_com.github.zzag.dynamic
+desktop-file-validate %{buildroot}/%{_datadir}/kservices5/plasma-wallpaper-com.github.zzag.dynamic.desktop
 
-%files -f plasma_wallpaper_com.github.zzag.wallpaper.lang
+%files -f plasma_wallpaper_com.github.zzag.dynamic.lang
 %license LICENSES/*
+%{_datadir}/plasma/wallpapers/com.github.zzag.dynamic
+%{_datadir}/metainfo/com.github.zzag.dynamic.appdata.xml
+%{_datadir}/kservices5/plasma-wallpaper-com.github.zzag.dynamic.desktop
+%{_libdir}/qt5/qml/com/github/zzag/plasma/wallpapers/dynamic
 %{_libdir}/qt5/plugins/kpackage/packagestructure/packagestructure_dynamicwallpaper.so
-%{_libdir}/qt5/qml/com/github/zzag
-%{_datadir}/dynamicwallpapers
-%{_datadir}/kservices5/plasma-wallpaper-com.github.zzag.wallpaper.desktop
-%{_datadir}/metainfo/com.github.zzag.wallpaper.appdata.xml
-%{_datadir}/plasma/wallpapers/com.github.zzag.wallpaper
+%{_libdir}/libkdynamicwallpaper.so.1.0.0
+%{_libdir}/libkdynamicwallpaper.so.1
+"%{_datadir}/wallpapers/Dynamic Numbers"
+
+%files devel
+%{_includedir}/KDynamicWallpaper
+%{_libdir}/libkdynamicwallpaper.so
+%{_libdir}/cmake/KDynamicWallpaper
+
+%files builder
+%{_bindir}/kdynamicwallpaperbuilder
+
+%files builder-bash-completion
+%{_datadir}/bash-completion/completions/kdynamicwallpaperbuilder
+
+%files builder-fish-completion
+%{_datadir}/fish/completions/kdynamicwallpaperbuilder.fish
+
+%files builder-zsh-completion
+%{_datadir}/zsh/site-functions/_kdynamicwallpaperbuilder
 
 %changelog
+* Sat Nov 14 2020 Iñaki Úcar <iucar@fedoraproject.org> - 3.3.5-1
+- Initial packaging for Fedora
