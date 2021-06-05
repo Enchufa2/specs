@@ -1,11 +1,11 @@
 %global component wallpapers-dynamic
 
 Name:           plasma-%{component}
-Version:        3.3.5
+Version:        3.3.9
 Release:        1%{?dist}
 Summary:        Dynamic wallpaper plugin for KDE Plasma
 
-License:        GPLv3 and LGPLv3 and MIT
+License:        GPLv3 and LGPLv3 and BSD and CC0 and CC-BY-SA
 URL:            https://github.com/zzag/plasma5-%{component}
 Source0:        %{url}/archive/%{version}/plasma5-%{component}-%{version}.tar.gz
 
@@ -111,5 +111,8 @@ desktop-file-validate %{buildroot}/%{_datadir}/kservices5/plasma-wallpaper-com.g
 %{_datadir}/zsh/site-functions/_kdynamicwallpaperbuilder
 
 %changelog
+* Sat Jun 05 2021 Iñaki Úcar <iucar@fedoraproject.org> - 3.3.9-1
+- Update to v3.3.9
+
 * Sat Nov 14 2020 Iñaki Úcar <iucar@fedoraproject.org> - 3.3.5-1
 - Initial packaging for Fedora
