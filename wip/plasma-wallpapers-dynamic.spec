@@ -42,7 +42,7 @@ Command-line utility to build dynamic wallpapers.
 %package        builder-bash-completion
 Summary:        Bash completion support for %{name}-builder
 BuildArch:      noarch
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       %{name}-builder%{?_isa} = %{version}-%{release}
 Requires:       bash bash-completion
 
 %description    builder-bash-completion
@@ -51,7 +51,7 @@ Files needed to support bash completion.
 %package        builder-fish-completion
 Summary:        Fish completion support for %{name}-builder
 BuildArch:      noarch
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       %{name}-builder%{?_isa} = %{version}-%{release}
 Requires:       fish
 
 %description    builder-fish-completion
@@ -60,7 +60,7 @@ Files needed to support fish completion.
 %package        builder-zsh-completion
 Summary:        Zsh completion support for %{name}-builder
 BuildArch:      noarch
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       %{name}-builder%{?_isa} = %{version}-%{release}
 Requires:       zsh
 
 %description    builder-zsh-completion
