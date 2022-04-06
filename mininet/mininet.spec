@@ -1,6 +1,6 @@
 Name:           mininet
 Version:        2.3.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Emulator for rapid prototyping of Software Defined Networks
 
 License:        MIT
@@ -10,12 +10,19 @@ Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 BuildRequires:  python3-devel
 BuildRequires:  gcc
 BuildRequires:  help2man
+
+# mininet can use openvswitch or other OpenFlow switches for packet forwarding
 Requires:       openvswitch
+# mininet relies on cgroups and network namespaces to emulate network nodes
 Requires:       libcgroup-tools
-Requires:       xterm, openssh-clients
+# tools required for managing processes
 Requires:       which, psmisc, procps-ng
+# tools required for accessing and operate emulated nodes
+Requires:       xterm, socat, openssh-clients
+# tools required for managing network interfaces at emulated nodes
 Requires:       iproute, ethtool, net-tools
-Requires:       telnet, socat, iperf
+# tools required for connectivity testing at emulated nodes
+Requires:       telnet, iperf
 
 %description
 Mininet emulates a complete network of hosts, links, and switches on a single
@@ -30,6 +37,9 @@ full line-rate execution.
 %prep
 %autosetup -p1
 
+# remove shebangs to make rpmlint happy
+sed -i '/#\!\/usr\/bin\/env python$/d' mininet/topo.py examples/*.py
+
 
 %generate_buildrequires
 %pyproject_buildrequires
@@ -38,14 +48,13 @@ full line-rate execution.
 %build
 %pyproject_wheel
 export PYTHON=%{python3}
-export CC="gcc %{optflags}"
 %make_build man
 %make_build mnexec
 
 
 %install
-install -D mnexec %{buildroot}%{_bindir}/mnexec
-install -D -t %{buildroot}%{_mandir}/man1 mn.1 mnexec.1
+install -p -D mnexec %{buildroot}%{_bindir}/mnexec
+install -p -D -m 644 -t %{buildroot}%{_mandir}/man1 mn.1 mnexec.1
 %pyproject_install
 %pyproject_save_files %{name}
 
@@ -64,5 +73,11 @@ install -D -t %{buildroot}%{_mandir}/man1 mn.1 mnexec.1
 
 
 %changelog
+* Wed Apr 06 2022 Iñaki Úcar <iucar@fedoraproject.org> - 2.3.0-2
+- Remove explicit compilation flags
+- Preserve timestamps in install
+- Add comments to Requires
+- Remove shebangs from mininet/topo.py and examples
+
 * Fri Mar 18 2022 Iñaki Úcar <iucar@fedoraproject.org> - 2.3.0-1
 - Initial packaging for Fedora
