@@ -267,6 +267,7 @@ popd
 
 # clean up
 pushd %{buildroot}%{_libexecdir}/%{name}
+    ln -s resources/app/bin
     for f in .gitignore .Rbuildignore LICENSE README; do
         find . -name ${f} -delete
     done
@@ -345,6 +346,7 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %{_bindir}/%{name}-server
 %{_bindir}/rserver
 %{_bindir}/rserver-pam
+%{_libexecdir}/%{name}/bin
 %{_libexecdir}/%{name}/resources/app/bin/crash-handler-proxy
 %{_libexecdir}/%{name}/resources/app/bin/rserver
 %{_libexecdir}/%{name}/resources/app/bin/rserver-pam
