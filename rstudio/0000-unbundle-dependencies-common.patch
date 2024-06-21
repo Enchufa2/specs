@@ -1,0 +1,103 @@
+From 46a6b9240f420e39b482d7c1a93fc97a25483991 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?I=C3=B1aki=20=C3=9Acar?= <iucar@fedoraproject.org>
+Date: Wed, 1 May 2024 15:54:55 +0200
+Subject: [PATCH] asdf
+
+---
+ src/cpp/session/CMakeLists.txt | 73 ----------------------------------
+ 1 file changed, 73 deletions(-)
+
+diff --git a/src/cpp/session/CMakeLists.txt b/src/cpp/session/CMakeLists.txt
+index 0202e84..9d76499 100644
+--- a/src/cpp/session/CMakeLists.txt
++++ b/src/cpp/session/CMakeLists.txt
+@@ -70,28 +70,6 @@ else()
+ endif()
+ 
+ 
+-# validate our dependencies exist
+-foreach(VAR RSTUDIO_DEPENDENCIES_DICTIONARIES_DIR
+-            RSTUDIO_DEPENDENCIES_MATHJAX_DIR
+-            RSTUDIO_DEPENDENCIES_PANDOC_DIR
+-            RSTUDIO_DEPENDENCIES_QUARTO_DIR)
+-
+- 
+-   # skip quarto if not enabled
+-   if("${VAR}" STREQUAL "RSTUDIO_DEPENDENCIES_QUARTO_DIR" AND NOT QUARTO_ENABLED)
+-      continue()
+-   endif()
+-
+-   # validate existence
+-   if(NOT EXISTS "${${VAR}}")
+-      message(FATAL_ERROR "${${VAR}} not found (re-run install-dependencies script to install")
+-   endif()
+-
+-   # cache variables so they can be seen by configure_file
+-   set("${VAR}" "${${VAR}}" CACHE INTERNAL "")
+-   
+-endforeach()
+-
+ # verify embedded packages are available
+ foreach(PKG ${RSTUDIO_EMBEDDED_PACKAGES})
+    file(GLOB PKG_FILES "${RSTUDIO_DEPENDENCIES_DIR}/common/${PKG}*.tar.gz")
+@@ -688,57 +666,6 @@ if(NOT RSTUDIO_SESSION_WIN32 AND NOT RSESSION_ALTERNATE_BUILD)
+    install(DIRECTORY "resources/dependencies"
+            DESTINATION ${RSTUDIO_INSTALL_SUPPORTING}/resources)
+ 
+-   # install hunspell dictionaries
+-   install(DIRECTORY "${RSTUDIO_DEPENDENCIES_DICTIONARIES_DIR}"
+-           DESTINATION "${RSTUDIO_INSTALL_SUPPORTING}/resources")
+-
+-   # install mathjax for local html preview
+-   install(DIRECTORY "${RSTUDIO_DEPENDENCIES_MATHJAX_DIR}"
+-           DESTINATION "${RSTUDIO_INSTALL_SUPPORTING}/resources")
+-
+-   # install node
+-   install(
+-      DIRECTORY "${RSTUDIO_DEPENDENCIES_DIR}/common/node/${RSTUDIO_INSTALLED_NODE_VERSION}/"
+-      DESTINATION "${RSTUDIO_INSTALL_BIN}/node"
+-      USE_SOURCE_PERMISSIONS)
+-
+-   # install quarto (or pandoc if quarto disabled)
+-   if(QUARTO_ENABLED)
+-      # install some quarto folders into Resources, as needed
+-      if(APPLE)
+-         if (RSTUDIO_ELECTRON)
+-            install(DIRECTORY "${RSTUDIO_DEPENDENCIES_QUARTO_DIR}" 
+-                  DESTINATION "${RSTUDIO_INSTALL_RESOURCES}/app"
+-                  USE_SOURCE_PERMISSIONS
+-                  PATTERN ".gitignore"
+-                  EXCLUDE)
+-         else()
+-            install(DIRECTORY "${RSTUDIO_DEPENDENCIES_QUARTO_DIR}"
+-                  DESTINATION "${RSTUDIO_INSTALL_BIN}"
+-                  USE_SOURCE_PERMISSIONS
+-                  PATTERN "*/share"
+-                  EXCLUDE
+-                  PATTERN ".gitignore"
+-                  EXCLUDE)
+-            install(DIRECTORY "${RSTUDIO_DEPENDENCIES_QUARTO_DIR}/share" 
+-                  DESTINATION "${RSTUDIO_INSTALL_SUPPORTING}/quarto"
+-                  USE_SOURCE_PERMISSIONS
+-                  PATTERN ".gitignore"
+-                  EXCLUDE)
+-         endif()
+-      else()
+-         install(DIRECTORY "${RSTUDIO_DEPENDENCIES_QUARTO_DIR}"
+-               DESTINATION "${RSTUDIO_INSTALL_BIN}"
+-               USE_SOURCE_PERMISSIONS
+-               PATTERN ".gitignore"
+-               EXCLUDE)
+-      endif()
+-   else()
+-      install(DIRECTORY "${RSTUDIO_DEPENDENCIES_PANDOC_DIR}/"
+-              DESTINATION "${RSTUDIO_INSTALL_BIN}/pandoc"
+-              USE_SOURCE_PERMISSIONS)
+-   endif()
+-
+    # install embedded packages
+    foreach(PKG ${RSTUDIO_EMBEDDED_PACKAGES})
+       file(GLOB PKG_FILES "${RSTUDIO_DEPENDENCIES_DIR}/common/${PKG}*.tar.gz")
+-- 
+2.44.0
+
