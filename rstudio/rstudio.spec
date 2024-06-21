@@ -32,7 +32,7 @@
 %global rstudio_version_major       2024
 %global rstudio_version_minor       07
 %global rstudio_version_patch       0
-%global rstudio_version_suffix      git
+%global rstudio_version_suffix      git0
 %global rstudio_git_revision_hash   c5cdc084aec0f885f087bdae8865ed149b76fa01
 %global quarto_git_revision_hash    3bd070a1ffabd0b2dc80c67f5d9fa9a2d8bee896
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
