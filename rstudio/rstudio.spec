@@ -282,20 +282,23 @@ getent passwd %{name}-server >/dev/null || \
     -c "User for %{name}-server" %{name}-server
 exit 0
 
-%pretrans -p <lua> common
-path = "%{_libexecdir}/%{name}/bin"
-st = posix.stat(path)
-if st and st.type == "directory" then
-  status = os.rename(path, path .. ".rpmmoved")
-  if not status then
-    suffix = 0
-    while not status do
-      suffix = suffix + 1
-      status = os.rename(path .. ".rpmmoved", path .. ".rpmmoved." .. suffix)
+%pretrans -p <lua> server
+local lfs = require("lfs")
+local deletedir
+deletedir = function(dir)
+    for file in lfs.dir(dir) do
+        local file_path = dir.."/"..file
+        if file ~= "." and file ~= ".." then
+            if lfs.attributes(file_path, "mode") == "directory" then
+                deletedir(file_path)
+            else
+                os.remove(file_path)
+            end
+        end
     end
-    os.rename(path, path .. ".rpmmoved")
-  end
+    os.remove(dir)
 end
+deletedir("%{_libexecdir}/%{name}/bin")
 
 %post server
 %systemd_post %{name}-server.service
@@ -313,8 +316,6 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %license COPYING NOTICE
 %doc README.md
 %dir %{_libexecdir}/%{name}
-%{_libexecdir}/%{name}/bin
-%ghost %{_libexecdir}/%{name}/bin.rpmmoved
 %dir %{_libexecdir}/%{name}/resources/app/bin
 %{_libexecdir}/%{name}/resources/app/bin/pandoc
 %{_libexecdir}/%{name}/resources/app/bin/node
@@ -363,6 +364,7 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %{_bindir}/%{name}-server
 %{_bindir}/rserver
 %{_bindir}/rserver-pam
+%{_libexecdir}/%{name}/bin
 %{_libexecdir}/%{name}/resources/app/bin/crash-handler-proxy
 %{_libexecdir}/%{name}/resources/app/bin/rserver
 %{_libexecdir}/%{name}/resources/app/bin/rserver-pam
