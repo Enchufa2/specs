@@ -282,6 +282,21 @@ getent passwd %{name}-server >/dev/null || \
     -c "User for %{name}-server" %{name}-server
 exit 0
 
+%pretrans -p <lua> common
+path = "%{_libexecdir}/%{name}/bin"
+st = posix.stat(path)
+if st and st.type == "directory" then
+  status = os.rename(path, path .. ".rpmmoved")
+  if not status then
+    suffix = 0
+    while not status do
+      suffix = suffix + 1
+      status = os.rename(path .. ".rpmmoved", path .. ".rpmmoved." .. suffix)
+    end
+    os.rename(path, path .. ".rpmmoved")
+  end
+end
+
 %post server
 %systemd_post %{name}-server.service
 
@@ -298,7 +313,8 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %license COPYING NOTICE
 %doc README.md
 %dir %{_libexecdir}/%{name}
-%{_libexecdir}/%{name}/resources/app/R
+%{_libexecdir}/%{name}/bin
+%ghost %{_libexecdir}/%{name}/bin.rpmmoved
 %dir %{_libexecdir}/%{name}/resources/app/bin
 %{_libexecdir}/%{name}/resources/app/bin/pandoc
 %{_libexecdir}/%{name}/resources/app/bin/node
@@ -306,6 +322,7 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %{_libexecdir}/%{name}/resources/app/bin/r-ldpath
 %{_libexecdir}/%{name}/resources/app/bin/rpostback
 %{_libexecdir}/%{name}/resources/app/bin/rsession
+%{_libexecdir}/%{name}/resources/app/R
 %{_libexecdir}/%{name}/resources/app/resources
 %{_libexecdir}/%{name}/resources/app/www
 %{_libexecdir}/%{name}/resources/app/www-symbolmaps
@@ -346,7 +363,6 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %{_bindir}/%{name}-server
 %{_bindir}/rserver
 %{_bindir}/rserver-pam
-%{_libexecdir}/%{name}/bin
 %{_libexecdir}/%{name}/resources/app/bin/crash-handler-proxy
 %{_libexecdir}/%{name}/resources/app/bin/rserver
 %{_libexecdir}/%{name}/resources/app/bin/rserver-pam
