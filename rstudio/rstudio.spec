@@ -63,6 +63,8 @@ Source1:        https://github.com/quarto-dev/quarto/archive/%{quarto_git_revisi
 Source2:        %{name}.metainfo.xml
 # Unbundle mathjax, pandoc, hunspell dictionaries, qtsingleapplication
 Patch0:         0000-unbundle-dependencies-common.patch
+# Move resources/app to the root
+Patch1:         0001-flatten-tree.patch
 # Remove the installation prefix from the exec path in the .desktop file
 # Patch2:         0002-fix-rstudio-exec-path.patch
 # We don't want to set RSTUDIO_PACKAGE_BUILD
@@ -110,7 +112,7 @@ Conflicts:      %{name} > 2024.04.0
 Obsoletes:      %{name} < 2024.04.0
 Suggests:       %{name}-desktop
 Suggests:       %{name}-server
-Recommends:     git
+Recommends:     git-core
 Recommends:     clang-devel
 Requires:       hunspell
 Requires:       pandoc
@@ -213,10 +215,7 @@ mkdir -p $HOME/.yarn/bin && ln -s node_modules/yarn/bin/yarn $HOME/.yarn/bin/yar
 %make_install -C build
 # expose symlinks in /usr/bin
 install -d -m 0755 %{buildroot}%{_bindir}
-ln -s %{_libexecdir}/%{name}/%{name} %{buildroot}%{_bindir}/%{name}
-for bin in %{name}-server rserver rserver-pam; do
-    ln -s %{_libexecdir}/%{name}/resources/app/bin/${bin} %{buildroot}%{_bindir}/${bin}
-done
+ln -s %{_libexecdir}/%{name}/{%{name},bin/%{name}-server} %{buildroot}%{_bindir}
 
 # validate .desktop and .metainfo.xml files
 desktop-file-validate %{buildroot}/%{_datadir}/applications/%{name}.desktop
@@ -240,12 +239,12 @@ install -m 0644 \
     %{buildroot}%{_sysconfdir}/pam.d/%{name}
 
 # symlink the location where the bundled dependencies should be
-pushd %{buildroot}%{_libexecdir}/%{name}/resources/app/bin
+pushd %{buildroot}%{_libexecdir}/%{name}/bin
     mkdir -p pandoc
     ln -sf %{_bindir}/pandoc pandoc/pandoc
     ln -sf %{_bindir}/node-%{rstudio_node_version} node
 popd
-pushd %{buildroot}%{_libexecdir}/%{name}/resources/app/resources
+pushd %{buildroot}%{_libexecdir}/%{name}/resources
     ln -sf %{_datadir}/hunspell dictionaries
     ln -sf %{_datadir}/javascript/mathjax mathjax-%{mathjax_short}
     pushd presentation/revealjs/fonts
@@ -267,11 +266,11 @@ popd
 
 # clean up
 pushd %{buildroot}%{_libexecdir}/%{name}
-    ln -s resources/app/bin
+    mv resources/app/{.,}* . && rm -rf resources/app
     for f in .gitignore .Rbuildignore LICENSE README; do
         find . -name ${f} -delete
     done
-    rm -rf extras resources/app/{COPYING,INSTALL,NOTICE,README.md,SOURCE,VERSION}
+    rm -rf extras COPYING INSTALL NOTICE README.md SOURCE VERSION
 popd
 
 # add user rstudio-server
@@ -281,24 +280,6 @@ getent passwd %{name}-server >/dev/null || \
     useradd -r -g %{name}-server -d %{_sharedstatedir}/%{name}-server -s /sbin/nologin \
     -c "User for %{name}-server" %{name}-server
 exit 0
-
-%pretrans -p <lua> server
-local lfs = require("lfs")
-local deletedir
-deletedir = function(dir)
-    for file in lfs.dir(dir) do
-        local file_path = dir.."/"..file
-        if file ~= "." and file ~= ".." then
-            if lfs.attributes(file_path, "mode") == "directory" then
-                deletedir(file_path)
-            else
-                os.remove(file_path)
-            end
-        end
-    end
-    os.remove(dir)
-end
-deletedir("%{_libexecdir}/%{name}/bin")
 
 %post server
 %systemd_post %{name}-server.service
@@ -316,22 +297,24 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %license COPYING NOTICE
 %doc README.md
 %dir %{_libexecdir}/%{name}
-%dir %{_libexecdir}/%{name}/resources/app/bin
-%{_libexecdir}/%{name}/resources/app/bin/pandoc
-%{_libexecdir}/%{name}/resources/app/bin/node
-%{_libexecdir}/%{name}/resources/app/bin/postback
-%{_libexecdir}/%{name}/resources/app/bin/r-ldpath
-%{_libexecdir}/%{name}/resources/app/bin/rpostback
-%{_libexecdir}/%{name}/resources/app/bin/rsession
-%{_libexecdir}/%{name}/resources/app/R
-%{_libexecdir}/%{name}/resources/app/resources
-%{_libexecdir}/%{name}/resources/app/www
-%{_libexecdir}/%{name}/resources/app/www-symbolmaps
+%dir %{_libexecdir}/%{name}/bin
+%{_libexecdir}/%{name}/bin/pandoc
+%{_libexecdir}/%{name}/bin/node
+%{_libexecdir}/%{name}/bin/postback
+%{_libexecdir}/%{name}/bin/r-ldpath
+%{_libexecdir}/%{name}/bin/rpostback
+%{_libexecdir}/%{name}/bin/rsession
+%{_libexecdir}/%{name}/R
+%{_libexecdir}/%{name}/resources
+%{_libexecdir}/%{name}/www
+%{_libexecdir}/%{name}/www-symbolmaps
 
 %files desktop
 %license %{_libexecdir}/%{name}/LICENSES.chromium.html
 %{_bindir}/%{name}
-%{_libexecdir}/%{name}/%{name}
+%{_libexecdir}/%{name}/.webpack
+%{_libexecdir}/%{name}/bin/diagnostics
+%{_libexecdir}/%{name}/bin/%{name}-backtrace.sh
 %{_libexecdir}/%{name}/chrome-sandbox
 %{_libexecdir}/%{name}/chrome_100_percent.pak
 %{_libexecdir}/%{name}/chrome_200_percent.pak
@@ -344,11 +327,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %{_libexecdir}/%{name}/libvulkan.so.1
 %{_libexecdir}/%{name}/locales
 %{_libexecdir}/%{name}/resources.pak
-%{_libexecdir}/%{name}/resources/app/.webpack
-%{_libexecdir}/%{name}/resources/app/%{name}.png
-%{_libexecdir}/%{name}/resources/app/bin/diagnostics
-%{_libexecdir}/%{name}/resources/app/bin/%{name}-backtrace.sh
-%{_libexecdir}/%{name}/resources/app/package.json
+%{_libexecdir}/%{name}/%{name}
+%{_libexecdir}/%{name}/%{name}.png
+%{_libexecdir}/%{name}/package.json
 %{_libexecdir}/%{name}/snapshot_blob.bin
 %{_libexecdir}/%{name}/v8_context_snapshot.bin
 %{_libexecdir}/%{name}/version
@@ -362,14 +343,11 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 
 %files server
 %{_bindir}/%{name}-server
-%{_bindir}/rserver
-%{_bindir}/rserver-pam
-%{_libexecdir}/%{name}/bin
-%{_libexecdir}/%{name}/resources/app/bin/crash-handler-proxy
-%{_libexecdir}/%{name}/resources/app/bin/rserver
-%{_libexecdir}/%{name}/resources/app/bin/rserver-pam
-%{_libexecdir}/%{name}/resources/app/bin/rserver-url
-%{_libexecdir}/%{name}/resources/app/bin/%{name}-server
+%{_libexecdir}/%{name}/bin/crash-handler-proxy
+%{_libexecdir}/%{name}/bin/rserver
+%{_libexecdir}/%{name}/bin/rserver-pam
+%{_libexecdir}/%{name}/bin/rserver-url
+%{_libexecdir}/%{name}/bin/%{name}-server
 %{_libexecdir}/%{name}/db
 %dir %{_sharedstatedir}/%{name}-server
 %{_unitdir}/%{name}-server.service

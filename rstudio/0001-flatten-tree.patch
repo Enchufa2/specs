@@ -1,0 +1,28 @@
+From 75bc71adb4e214cb3822c352539ecc4c56e7d951 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?I=C3=B1aki=20=C3=9Acar?= <iucar@fedoraproject.org>
+Date: Sat, 22 Jun 2024 17:14:38 +0200
+Subject: [PATCH] flatten tree
+
+---
+ cmake/globals.cmake | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/cmake/globals.cmake b/cmake/globals.cmake
+index 970f6a0..fd326a9 100644
+--- a/cmake/globals.cmake
++++ b/cmake/globals.cmake
+@@ -322,9 +322,9 @@ else()
+       if (RSTUDIO_SESSION_WIN32)
+          set(RSTUDIO_INSTALL_BIN resources/app/bin/x86)
+       else()
+-         set(RSTUDIO_INSTALL_BIN resources/app/bin)
++         set(RSTUDIO_INSTALL_BIN bin)
+       endif()
+-      set(RSTUDIO_INSTALL_SUPPORTING resources/app)
++      set(RSTUDIO_INSTALL_SUPPORTING .)
+       set(RSTUDIO_INSTALL_ELECTRON .)
+    else()
+       if (RSTUDIO_SESSION_WIN32)
+-- 
+2.45.1
+
