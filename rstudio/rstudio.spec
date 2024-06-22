@@ -116,6 +116,7 @@ Recommends:     git-core
 Recommends:     clang-devel
 Requires:       hunspell
 Requires:       pandoc
+Requires:       quarto
 Requires:       nodejs%{rstudio_node_version}
 Requires:       mathjax
 Requires:       lato-fonts, glyphography-newscycle-fonts
