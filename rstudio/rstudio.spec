@@ -245,6 +245,7 @@ pushd %{buildroot}%{_libexecdir}/%{name}/bin
     ln -sf %{_bindir}/node-%{rstudio_node_version} node
 popd
 pushd %{buildroot}%{_libexecdir}/%{name}/resources
+    mv app/{.,}* .. && rm -rf app && ln -s .. app
     ln -sf %{_datadir}/hunspell dictionaries
     ln -sf %{_datadir}/javascript/mathjax mathjax-%{mathjax_short}
     pushd presentation/revealjs/fonts
@@ -266,7 +267,6 @@ popd
 
 # clean up
 pushd %{buildroot}%{_libexecdir}/%{name}
-    mv resources/app/{.,}* . && rm -rf resources/app
     for f in .gitignore .Rbuildignore LICENSE README; do
         find . -name ${f} -delete
     done
