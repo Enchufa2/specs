@@ -16,6 +16,7 @@ Source:         %{url}/archive/%{version}/%{upname}-%{version}.tar.gz
 BuildRequires:  cargo-rpm-macros >= 24
 BuildRequires:  gcc-c++
 BuildRequires:  openssl-devel
+Requires:       R-core
 
 %description
 Ark is an R kernel for Jupyter applications. It was created to serve as
