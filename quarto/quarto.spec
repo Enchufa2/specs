@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           quarto
-Version:        1.4.556
+Version:        1.4.557
 Release:        1%{?dist}
 Summary:        An open-source scientific and technical publishing system
 
@@ -44,9 +44,7 @@ install -D -m 0644 \
     %{buildroot}%{_mandir}/man1/%{name}.1
 rm -rf %{buildroot}%{_libexecdir}/%{name}/share/man
 # use system pandoc
-pushd %{buildroot}%{_libexecdir}/%{name}/bin/tools/$(uname -m)
-    ln -sf %{_bindir}/pandoc
-popd
+ln -sf %{_bindir}/pandoc %{buildroot}%{_libexecdir}/%{name}/bin/tools/$(uname -m)
 
 %files
 %{_bindir}/%{name}
