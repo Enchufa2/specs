@@ -206,6 +206,7 @@ mkdir -p $HOME/.yarn/bin && ln -s node_modules/yarn/bin/yarn $HOME/.yarn/bin/yar
     -DRSTUDIO_USE_SYSTEM_BOOST=Yes \
     -DRSTUDIO_USE_SYSTEM_YAML_CPP=Yes \
     -DBOOST_ROOT=%{_prefix} -DBOOST_LIBRARYDIR=%{_lib} \
+    -DOPENSSL_NO_ENGINE=1 \
     -DRSTUDIO_BOOST_REQUESTED_VERSION=1.81.0 \
     -DRSTUDIO_NODE_VERSION=%{rstudio_node_version} \
     -DCMAKE_INSTALL_PREFIX=%{_libexecdir}/%{name}
@@ -355,6 +356,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Tue Jul 02 2024 Iñaki Úcar <iucar@fedoraproject.org> - 2024.04.2+764-2
+- Define OPENSSL_NO_ENGINE to avoid deprecated API
+
 * Tue Jun 11 2024 Iñaki Úcar <iucar@fedoraproject.org> - 2024.04.2+764-1
 - Update to 2024.04.2+764
 
