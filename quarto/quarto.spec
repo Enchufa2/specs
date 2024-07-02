@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           quarto
-Version:        1.4.557
+Version:        1.5.52
 Release:        1%{?dist}
 Summary:        An open-source scientific and technical publishing system
 
