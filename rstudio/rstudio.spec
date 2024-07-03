@@ -45,6 +45,8 @@
     export GIT_COMMIT=%{rstudio_git_revision_hash} ; \
     export PACKAGE_OS=$(cat /etc/redhat-release)
 
+# Disable deprecated openssl engine
+%global _preprocessor_defines %{_preprocessor_defines} -DOPENSSL_NO_ENGINE
 # Do not build non-lto objects, as that may result in
 # memory exhaustion by the linker.
 %global optflags %(echo '%{optflags}' | sed -e 's!-ffat-lto-objects!-fno-fat-lto-objects!g')
@@ -206,7 +208,6 @@ mkdir -p $HOME/.yarn/bin && ln -s node_modules/yarn/bin/yarn $HOME/.yarn/bin/yar
     -DRSTUDIO_USE_SYSTEM_BOOST=Yes \
     -DRSTUDIO_USE_SYSTEM_YAML_CPP=Yes \
     -DBOOST_ROOT=%{_prefix} -DBOOST_LIBRARYDIR=%{_lib} \
-    -DOPENSSL_NO_ENGINE=1 \
     -DRSTUDIO_BOOST_REQUESTED_VERSION=1.81.0 \
     -DRSTUDIO_NODE_VERSION=%{rstudio_node_version} \
     -DCMAKE_INSTALL_PREFIX=%{_libexecdir}/%{name}
