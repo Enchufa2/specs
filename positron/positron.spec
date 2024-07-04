@@ -52,10 +52,11 @@ git init # they use git apply in extensions/positron-python/scripts/vendor.py
 
 %build
 %{positron_flags}
-alias node="%{_bindir}/node-%{positron_node_version}"
-alias npm="%{_bindir}/npm-%{positron_node_version}"
-mkdir -p ~/.local && npm config set prefix "~/.local"
-npm install --global yarn && alias yarn="~/.local/bin/yarn"
+mkdir -p ~/.local/bin && export PATH=~/.local/bin:$PATH
+ln -sf %{_bindir}/node-%{positron_node_version} ~/.local/bin/node
+ln -sf %{_bindir}/npm-%{positron_node_version} ~/.local/bin/npm
+npm config set prefix "~/.local"
+npm install --global yarn
 yarn global add node-gyp
 yarn --immutable --network-timeout 120000
 yarn gulp vscode-linux-%{positron_arch}
