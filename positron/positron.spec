@@ -2,9 +2,9 @@
 %global positron_arch           %[ "%{_arch}" == "x86_64" ? "x64" : "arm64" ]
 %global positron_node_version   20
 %global positron_version_major  2024
-%global positron_version_minor  06
-%global positron_version_patch  1
-%global positron_version_suffix 54
+%global positron_version_minor  07
+%global positron_version_patch  0
+%global positron_version_suffix 14
 %global positron_version        %{positron_version_major}.%{positron_version_minor}.%{positron_version_patch}
 %global positron_version_build  %{positron_version}-%{positron_version_suffix}
 %global positron_flags \
