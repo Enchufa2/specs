@@ -4,7 +4,7 @@
 %global positron_version_major  2024
 %global positron_version_minor  07
 %global positron_version_patch  0
-%global positron_version_suffix 15
+%global positron_version_suffix 17
 %global positron_version        %{positron_version_major}.%{positron_version_minor}.%{positron_version_patch}
 %global positron_version_build  %{positron_version}-%{positron_version_suffix}
 %global positron_flags \
