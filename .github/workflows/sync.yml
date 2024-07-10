@@ -15,7 +15,8 @@ jobs:
     - uses: actions/checkout@v3
     - name: Sync packages
       run: |
-        git config --local user.name "Github Action"
+        git config --global --add safe.directory "$GITHUB_WORKSPACE"
+        git config --local user.name "github-actions[bot]"
         git config --local user.email "enchufa2@users.noreply.github.com"
         mkdir -p $HOME/.config && echo "$TOKEN" > $HOME/.config/copr
         ./sync.py
