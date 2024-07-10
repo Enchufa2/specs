@@ -3,7 +3,7 @@
 %global positron_node 20
 
 Name:           positron
-Version:        2024.07.0+17
+Version:        2024.07.0+27
 Release:        1%{?dist}
 Summary:        A next-generation data science IDE
 
