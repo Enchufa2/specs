@@ -18,8 +18,6 @@ def query_repo(pkg):
         return gh.get_repo(repo).get_releases()[0].tag_name
     except:
         return "0"
-    finally:
-        gh.close()
 
 def update_spec(pkg, version):
     cmd = f'sed -i -E "s/(^Version:\\s*).*/\\1{version}/" {pkg}/{pkg}.spec'
