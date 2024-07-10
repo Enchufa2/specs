@@ -1,28 +1,24 @@
-%global debug_package           %{nil}
-%global positron_arch           %[ "%{_arch}" == "x86_64" ? "x64" : "arm64" ]
-%global positron_node_version   20
-%global positron_version_major  2024
-%global positron_version_minor  07
-%global positron_version_patch  0
-%global positron_version_suffix 17
-%global positron_version        %{positron_version_major}.%{positron_version_minor}.%{positron_version_patch}
-%global positron_version_build  %{positron_version}-%{positron_version_suffix}
-%global positron_flags \
-    export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 ; \
-    export ELECTRON_SKIP_BINARY_DOWNLOAD=1 ; \
-    export POSITRON_BUILD_NUMBER=%{positron_version_suffix}
+%global debug_package %{nil}
+%global positron_arch %[ "%{_arch}" == "x86_64" ? "x64" : "arm64" ]
+%global positron_node 20
 
 Name:           positron
-Version:        %{positron_version}+%{positron_version_suffix}
+Version:        2024.07.0+17
 Release:        1%{?dist}
 Summary:        A next-generation data science IDE
 
+%global positron_version %gsub %{version} + -
+%global positron_flags \
+    export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 ; \
+    export ELECTRON_SKIP_BINARY_DOWNLOAD=1 ; \
+    export POSITRON_BUILD_NUMBER=%gsub %{version} .*%+(.*) %1
+
 License:        Elastic-2.0
 URL:            https://github.com/posit-dev/%{name}
-Source0:        %{url}/archive/%{positron_version_build}/%{name}-%{positron_version_build}.tar.gz
+Source0:        %{url}/archive/%{positron_version}/%{name}-%{positron_version}.tar.gz
 
 #BuildRequires:  yarnpkg, nodejs-npm
-BuildRequires:  nodejs%{positron_node_version}-npm
+BuildRequires:  nodejs%{positron_node}-npm
 BuildRequires:  make, cmake, gcc-c++
 BuildRequires:  python3-pip, python3dist(setuptools), git-core
 BuildRequires:  krb5-devel
@@ -34,7 +30,7 @@ BuildRequires:  pandoc
 BuildRequires:  hicolor-icon-theme
 BuildRequires:  desktop-file-utils
 BuildRequires:  libappstream-glib
-#Requires:       nodejs%%{positron_node_version}
+#Requires:       nodejs%%{positron_node}
 Requires:       ark-kernel, python3-ipykernel
 Requires:       pandoc
 Requires:       hicolor-icon-theme, shared-mime-info
@@ -45,7 +41,7 @@ An extensible, polyglot tool for writing code and exploring data.
 A familiar environment for reproducible authoring and publishing.
 
 %prep
-%autosetup -p1 -n %{name}-%{positron_version_build}
+%autosetup -p1 -n %{name}-%{positron_version}
 mkdir -p ../ark/target/release
 ln -sf %{_libexecdir}/ark-kernel/bin/ark ../ark/target/release
 git init # they use git apply in extensions/positron-python/scripts/vendor.py
@@ -53,8 +49,8 @@ git init # they use git apply in extensions/positron-python/scripts/vendor.py
 %build
 %{positron_flags}
 mkdir -p ~/.local/bin && export PATH=~/.local/bin:$PATH
-ln -sf %{_bindir}/node-%{positron_node_version} ~/.local/bin/node
-ln -sf %{_bindir}/npm-%{positron_node_version} ~/.local/bin/npm
+ln -sf %{_bindir}/node-%{positron_node} ~/.local/bin/node
+ln -sf %{_bindir}/npm-%{positron_node} ~/.local/bin/npm
 npm config set prefix "~/.local"
 npm install --global yarn
 yarn global add node-gyp
