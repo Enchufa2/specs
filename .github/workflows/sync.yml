@@ -11,7 +11,7 @@ jobs:
     container: fedora:rawhide
     steps:
     - name: Setup
-      run: dnf -y install git-core rpm-build python3-{packaging,copr,PyGithub}
+      run: dnf -y install git-core rpm-build python3-{packaging,copr,PyGithub,GitPython}
     - uses: actions/checkout@v3
     - name: Sync packages
       run: |
