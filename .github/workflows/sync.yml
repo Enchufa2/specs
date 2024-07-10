@@ -11,13 +11,13 @@ jobs:
     container: fedora:rawhide
     steps:
     - name: Setup
+      run: dnf -y install git-core rpm-build python3-copr python3-PyGithub
+    - uses: actions/checkout@v3
+    - name: Sync packages
       run: |
-        dnf -y install git-core rpm-build python3-copr python3-PyGithub
         git config --local user.name "Github Action"
         git config --local user.email "enchufa2@users.noreply.github.com"
         mkdir -p $HOME/.config && echo "$TOKEN" > $HOME/.config/copr
+        ./sync.py
       env:
         TOKEN: ${{ secrets.COPR_TOKEN }}
-    - uses: actions/checkout@v3
-    - name: Sync packages
-      run: ./sync.py
