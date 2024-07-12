@@ -32,7 +32,7 @@ def commit_repo(pkg, version):
 def build_pkg(pkg, proj):
     copr = Client.create_from_config_file()
     user = copr.config['username']
-    copr.build_proxy.create_from_distgit(user, proj, pkg)
+    copr.package_proxy.build(user, proj, pkg)
 
 with open('sync.csv', newline='') as f:
     for pkg, proj in csv.reader(f, delimiter=' '):
