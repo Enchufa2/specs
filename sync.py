@@ -11,13 +11,16 @@ def query_spec(pkg, tag):
     cmd = f'rpmspec -q {pkg}/{pkg}.spec --qf "%{{{tag}}}\n" | tail -n1'
     return check_output(cmd, shell=True).decode('utf-8').strip()
 
-def query_repo(pkg):
+def query_repo(pkg, prerel):
     gh = Github()
     repo = query_spec(pkg, 'url').split('github.com/')[1]
     try:
-        return gh.get_repo(repo).get_releases()[0].tag_name
+        for tag in gh.get_repo(repo).get_releases():
+            if not (not prerel and tag.prerelease):
+                break
+        return tag.tag_name.replace('v', '')
     except:
-        return "0"
+        return '0'
 
 def update_spec(pkg, version):
     cmd = f'sed -i -E "s/(^Version:\\s*).*/\\1{version}/" {pkg}/{pkg}.spec'
@@ -35,9 +38,9 @@ def build_pkg(pkg, proj):
     copr.package_proxy.build(user, proj, pkg)
 
 with open('sync.csv', newline='') as f:
-    for pkg, proj in csv.reader(f, delimiter=' '):
+    for pkg, proj, prerel in csv.reader(f, delimiter=' '):
         version_spec = query_spec(pkg, 'version')
-        version_repo = query_repo(pkg).replace('-', '+')
+        version_repo = query_repo(pkg, bool(prerel)).replace('-', '+')
         if Version(version_repo) <= Version(version_spec):
             continue
         update_spec(pkg, version_repo)
