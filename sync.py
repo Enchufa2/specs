@@ -40,7 +40,7 @@ def build_pkg(pkg, proj):
 with open('sync.csv', newline='') as f:
     for pkg, proj, prerel in csv.reader(f, delimiter=' '):
         version_spec = query_spec(pkg, 'version')
-        version_repo = query_repo(pkg, bool(prerel)).replace('-', '+')
+        version_repo = query_repo(pkg, prerel == "True").replace('-', '+')
         if Version(version_repo) <= Version(version_spec):
             continue
         update_spec(pkg, version_repo)
