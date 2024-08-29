@@ -1,5 +1,5 @@
 %global debug_package %{nil}
-%global positron_arch %[ "%{_arch}" == "x86_64" ? "x64" : "arm64" ]
+%global positron_arch %[ "  " == "x86_64" ? "x64" : "arm64" ]
 %global positron_node 20
 
 Name:           positron
@@ -9,6 +9,8 @@ Summary:        A next-generation data science IDE
 
 %global positron_version %gsub %{version} + -
 %global positron_flags \
+    export npm_config_arch=%{positron_arch} ; \
+    export VSCODE_ARCH=%{positron_arch} ; \
     export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 ; \
     export ELECTRON_SKIP_BINARY_DOWNLOAD=1 ; \
     export POSITRON_BUILD_NUMBER=%gsub %{version} .*%+(.*) %1
