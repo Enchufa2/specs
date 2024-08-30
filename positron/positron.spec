@@ -1,5 +1,5 @@
 %global debug_package %{nil}
-%global positron_arch %[ "  " == "x86_64" ? "x64" : "arm64" ]
+%global positron_arch %[ "%{_arch}" == "x86_64" ? "x64" : "arm64" ]
 %global positron_node 20
 
 Name:           positron
