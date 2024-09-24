@@ -30,11 +30,11 @@
 %global mathjax_short               27
 %global rstudio_node_version        20
 %global rstudio_version_major       2024
-%global rstudio_version_minor       07
+%global rstudio_version_minor       09
 %global rstudio_version_patch       0
-%global rstudio_version_suffix      git%{?buildtag}
-%global rstudio_git_revision_hash   c5cdc084aec0f885f087bdae8865ed149b76fa01
-%global quarto_git_revision_hash    3bd070a1ffabd0b2dc80c67f5d9fa9a2d8bee896
+%global rstudio_version_suffix      375
+%global rstudio_git_revision_hash   c8fc7aee6dc218d5687553f9041c6b1e5ea268ff
+%global quarto_git_revision_hash    7323f7eb7f0c772b699811aa919b5782634df876
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
     export RSTUDIO_VERSION_MAJOR=%{rstudio_version_major} ; \
@@ -53,7 +53,7 @@
 
 Name:           rstudio
 Version:        %{rstudio_version}+%{rstudio_version_suffix}
-Release:        0%{?dist}
+Release:        1%{?dist}
 Summary:        RStudio base package
 ExclusiveArch:  %{java_arches}
 
@@ -357,6 +357,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Tue Sep 24 2024 Iñaki Úcar <iucar@fedoraproject.org> - 2024.09.0+375-1
+- Update to 2024.09.0+375
+
 * Tue Jul 02 2024 Iñaki Úcar <iucar@fedoraproject.org> - 2024.04.2+764-2
 - Define OPENSSL_NO_ENGINE to avoid deprecated API
 

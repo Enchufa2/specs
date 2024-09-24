@@ -1,43 +1,23 @@
-From c6800a966b2ed7c4f58d7ee18a78f443b259a7be Mon Sep 17 00:00:00 2001
+From 4b4523ab0012776499fded376326b5fbd874ff62 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?I=C3=B1aki=20=C3=9Acar?= <iucar@fedoraproject.org>
-Date: Tue, 31 Oct 2023 22:52:40 +0100
+Date: Tue, 24 Sep 2024 10:50:09 +0200
 Subject: [PATCH] fix resources path
 
 ---
- src/cpp/desktop/DesktopOptions.cpp | 6 ------
- src/cpp/session/SessionOptions.cpp | 5 -----
- 2 files changed, 11 deletions(-)
+ src/cpp/session/SessionOptions.cpp | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/src/cpp/desktop/DesktopOptions.cpp b/src/cpp/desktop/DesktopOptions.cpp
-index 325b896..a3a3379 100644
---- a/src/cpp/desktop/DesktopOptions.cpp
-+++ b/src/cpp/desktop/DesktopOptions.cpp
-@@ -653,15 +653,9 @@ FilePath Options::resourcesPath() const
- {
-    if (resourcesPath_.isEmpty())
-    {
--#ifdef RSTUDIO_PACKAGE_BUILD
-       // release configuration: the 'resources' folder is
-       // part of the supporting files folder
-       resourcesPath_ = supportingFilePath().completePath("resources");
--#else
--      // developer configuration: the 'resources' folder is
--      // a sibling of the RStudio executable
--      resourcesPath_ = scriptsPath().completePath("resources");
--#endif
-    }
- 
-    return resourcesPath_;
 diff --git a/src/cpp/session/SessionOptions.cpp b/src/cpp/session/SessionOptions.cpp
-index 99ab466..cbf59f4 100644
+index 310d049..c79e01f 100644
 --- a/src/cpp/session/SessionOptions.cpp
 +++ b/src/cpp/session/SessionOptions.cpp
-@@ -682,12 +682,7 @@ void Options::resolveQuartoPath(const FilePath& resourcePath,
+@@ -711,13 +711,7 @@ void Options::resolveQuartoPath(const FilePath& resourcePath,
  void Options::resolveNodePath(const FilePath& resourcePath,
                                std::string* pPath)
  {
 -#if defined(__linux__) && !defined(RSTUDIO_PACKAGE_BUILD)
--   FilePath dependenciesPath = resourcePath.completePath("../../dependencies/common/node/18.18.2");
+-   // node version should match RSTUDIO_INSTALLED_NODE_VERSION
+-   FilePath dependenciesPath = resourcePath.completePath("../../dependencies/common/node/20.15.1-patched");
 -   resolvePath(dependenciesPath, pPath);
 -#else
     resolvePath(resourcePath, pPath);
@@ -46,5 +26,5 @@ index 99ab466..cbf59f4 100644
  
  void Options::resolveRsclangPath(const FilePath& resourcePath,
 -- 
-2.41.0
+2.46.0
 

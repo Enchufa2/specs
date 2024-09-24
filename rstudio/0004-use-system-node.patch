@@ -1,14 +1,14 @@
-From b67d7c16bdd34fb7a13226f1761ca43523b8b35a Mon Sep 17 00:00:00 2001
+From 2c8430eeecef1a3d22e4c5302c8e95cbc832e3b7 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?I=C3=B1aki=20=C3=9Acar?= <iucar@fedoraproject.org>
-Date: Thu, 20 Jun 2024 17:20:47 +0200
-Subject: [PATCH] use system node
+Date: Tue, 24 Sep 2024 10:54:55 +0200
+Subject: [PATCH] use system node patch
 
 ---
  src/gwt/build.xml | 27 +--------------------------
  1 file changed, 1 insertion(+), 26 deletions(-)
 
 diff --git a/src/gwt/build.xml b/src/gwt/build.xml
-index 83b078a..36723f0 100644
+index 34f3fc3..36723f0 100644
 --- a/src/gwt/build.xml
 +++ b/src/gwt/build.xml
 @@ -84,32 +84,7 @@
@@ -16,7 +16,7 @@ index 83b078a..36723f0 100644
  
     <!-- panmirror typescript library -->
 -   <!-- ensure version matches RSTUDIO_NODE_VERSION -->
--   <property name="node.version" value="18.18.2"/>
+-   <property name="node.version" value="20.14.0"/>
 -   <property name="node.dir" value="../../dependencies/common/node/${node.version}"/>
 -   <!-- use yarn from system but will prefer yarn from dependencies if available -->
 -   <condition property="yarn.bin" value="yarn">
@@ -46,5 +46,5 @@ index 83b078a..36723f0 100644
     <property name="panmirror.dir" value="./lib/quarto/apps/panmirror"/>
     <property name="panmirror.build.dir" value="./www/js/panmirror"/>
 -- 
-2.45.1
+2.46.0
 

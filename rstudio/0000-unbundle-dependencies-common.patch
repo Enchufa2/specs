@@ -1,14 +1,14 @@
-From 46a6b9240f420e39b482d7c1a93fc97a25483991 Mon Sep 17 00:00:00 2001
+From bd806dee6f33c7f66e086ee408f94a79e2ac1934 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?I=C3=B1aki=20=C3=9Acar?= <iucar@fedoraproject.org>
-Date: Wed, 1 May 2024 15:54:55 +0200
-Subject: [PATCH] asdf
+Date: Tue, 24 Sep 2024 10:42:50 +0200
+Subject: [PATCH] unbundle dependencies common
 
 ---
  src/cpp/session/CMakeLists.txt | 73 ----------------------------------
  1 file changed, 73 deletions(-)
 
 diff --git a/src/cpp/session/CMakeLists.txt b/src/cpp/session/CMakeLists.txt
-index 0202e84..9d76499 100644
+index e5bd743..a84d326 100644
 --- a/src/cpp/session/CMakeLists.txt
 +++ b/src/cpp/session/CMakeLists.txt
 @@ -70,28 +70,6 @@ else()
@@ -40,7 +40,7 @@ index 0202e84..9d76499 100644
  # verify embedded packages are available
  foreach(PKG ${RSTUDIO_EMBEDDED_PACKAGES})
     file(GLOB PKG_FILES "${RSTUDIO_DEPENDENCIES_DIR}/common/${PKG}*.tar.gz")
-@@ -688,57 +666,6 @@ if(NOT RSTUDIO_SESSION_WIN32 AND NOT RSESSION_ALTERNATE_BUILD)
+@@ -691,57 +669,6 @@ if(NOT RSTUDIO_SESSION_WIN32 AND NOT RSESSION_ALTERNATE_BUILD)
     install(DIRECTORY "resources/dependencies"
             DESTINATION ${RSTUDIO_INSTALL_SUPPORTING}/resources)
  
@@ -54,7 +54,7 @@ index 0202e84..9d76499 100644
 -
 -   # install node
 -   install(
--      DIRECTORY "${RSTUDIO_DEPENDENCIES_DIR}/common/node/${RSTUDIO_INSTALLED_NODE_VERSION}/"
+-      DIRECTORY "${RSTUDIO_DEPENDENCIES_DIR}/common/node/${RSTUDIO_INSTALLED_NODE_VERSION}-patched/"
 -      DESTINATION "${RSTUDIO_INSTALL_BIN}/node"
 -      USE_SOURCE_PERMISSIONS)
 -
@@ -99,5 +99,5 @@ index 0202e84..9d76499 100644
     foreach(PKG ${RSTUDIO_EMBEDDED_PACKAGES})
        file(GLOB PKG_FILES "${RSTUDIO_DEPENDENCIES_DIR}/common/${PKG}*.tar.gz")
 -- 
-2.44.0
+2.46.0
 
