@@ -1,0 +1,4 @@
+packaging
+copr
+PyGithub
+GitPython

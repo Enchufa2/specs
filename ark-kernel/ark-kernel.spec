@@ -6,7 +6,7 @@ Version:        0.1.143
 Release:        1%{?dist}
 Summary:        Ark, an R Kernel
 
-SourceLicense:  MIT
+# SourceLicense:  MIT
 License:        MIT
 # LICENSE.dependencies contains a full license breakdown
 

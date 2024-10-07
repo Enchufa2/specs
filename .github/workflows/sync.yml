@@ -1,24 +1,27 @@
-name: Daily sync
+name: Weekly sync
 
 on:
   workflow_dispatch:
   schedule:
-  - cron: '0 0 * * *'
+  - cron: '0 0 * * 1'
 
 jobs:
   sync:
     runs-on: ubuntu-latest
-    container: fedora:rawhide
     steps:
-    - name: Setup
-      run: dnf -y install git-core rpm-build python3-{packaging,copr,PyGithub,GitPython}
     - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - run: |
+        apt -y update && apt -y install rpm
+        pip install -r requirements.txt
     - name: Sync packages
       run: |
-        git config --global --add safe.directory "$GITHUB_WORKSPACE"
         git config --local user.name "github-actions[bot]"
         git config --local user.email "enchufa2@users.noreply.github.com"
-        mkdir -p $HOME/.config && echo "$TOKEN" > $HOME/.config/copr
-        ./sync.py
+        mkdir -p $HOME/.config && echo "$COPR_TOKEN" > $HOME/.config/copr
+        python sync.py
       env:
-        TOKEN: ${{ secrets.COPR_TOKEN }}
+        COPR_TOKEN: ${{ secrets.COPR_TOKEN }}
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
