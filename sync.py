@@ -27,6 +27,11 @@ def query_repo(pkg, prerel):
     except:
         return '0'
 
+def create_issue(pkg, version):
+    cmd = f'gh issue create -t "{pkg}: version {version} is available" -b ""'
+    check_output(cmd, shell=True)
+    print(f'{pkg}: issue created')
+
 def update_spec(pkg, version):
     cmd = f'sed -i -E "s/(^Version:\\s*).*/\\1{version}/" {pkg}/{pkg}.spec'
     check_output(cmd, shell=True)
@@ -53,7 +58,7 @@ with open('sync.csv', newline='') as f:
         if Version(version_repo) <= Version(version_spec):
             continue
         if not build:
-            # open issue
+            create_issue(pkg, version_repo)
             continue
         update_spec(pkg, version_repo)
         if os.environ.get('CI') is None:
