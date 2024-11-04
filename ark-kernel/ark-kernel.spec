@@ -2,7 +2,7 @@
 %global upname ark
 
 Name:           %{upname}-kernel
-Version:        0.1.148
+Version:        0.1.149
 Release:        1%{?dist}
 Summary:        Ark, an R Kernel
 
