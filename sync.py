@@ -17,9 +17,10 @@ def query_repo(pkg, prerel):
     try:
         repo = gh.get_repo(repo)
         if prerel:
-            ver = repo.get_tags()[0].name
-            if 'daily' in ver: # positron publishes latest+daily
-                ver = repo.get_tags()[1].name
+            for tag in repo.get_tags():
+                ver = tag.name
+                if not 'daily' in ver: # positron publishes latest-daily
+                    break
         else:
             for tag in repo.get_releases():
                 if not tag.prerelease:
