@@ -52,7 +52,7 @@
 %global optflags %(echo '%{optflags}' | sed -e 's!-ffat-lto-objects!-fno-fat-lto-objects!g')
 
 Name:           rstudio
-Version:        %{rstudio_version}+%{rstudio_version_suffix}
+Version:        2024.09.1+394
 Release:        1%{?dist}
 Summary:        RStudio base package
 ExclusiveArch:  %{java_arches}
