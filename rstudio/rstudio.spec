@@ -31,8 +31,8 @@
 %global rstudio_node_version        20
 %global rstudio_version_major       2024
 %global rstudio_version_minor       09
-%global rstudio_version_patch       0
-%global rstudio_version_suffix      375
+%global rstudio_version_patch       1
+%global rstudio_version_suffix      394
 %global rstudio_git_revision_hash   c8fc7aee6dc218d5687553f9041c6b1e5ea268ff
 %global quarto_git_revision_hash    7323f7eb7f0c772b699811aa919b5782634df876
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
@@ -52,8 +52,8 @@
 %global optflags %(echo '%{optflags}' | sed -e 's!-ffat-lto-objects!-fno-fat-lto-objects!g')
 
 Name:           rstudio
-Version:        2024.09.1+394
-Release:        1%{?dist}
+Version:        %{rstudio_version}+%{rstudio_version_suffix}
+Release:        2%{?dist}
 Summary:        RStudio base package
 ExclusiveArch:  %{java_arches}
 
@@ -73,6 +73,8 @@ Patch1:         0001-flatten-tree.patch
 Patch3:         0003-fix-resources-path.patch
 # Use system-provided nodejs binary
 Patch4:         0004-use-system-node.patch
+# https://github.com/rstudio/rstudio/pull/15402
+Patch5:         15402.patch
 
 BuildRequires:  make, cmake, ant
 BuildRequires:  gcc-c++, java-devel, R-core-devel
@@ -357,6 +359,10 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Mon Nov 11 2024 Iñaki Úcar <iucar@fedoraproject.org> - 2024.09.1+394-2
+- Update to 2024.09.1+394
+- Add upstream patch to fix font issues
+
 * Tue Sep 24 2024 Iñaki Úcar <iucar@fedoraproject.org> - 2024.09.0+375-1
 - Update to 2024.09.0+375
 
