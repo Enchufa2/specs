@@ -60,7 +60,7 @@ with open('sync.csv', newline='') as f:
         print(f'{pkg}: spec {version_spec} | repo {version_repo}')
         if Version(version_repo) <= Version(version_spec):
             continue
-        if not build:
+        if build == "False":
             create_issue(pkg, version_repo)
             continue
         update_spec(pkg, version_repo)
