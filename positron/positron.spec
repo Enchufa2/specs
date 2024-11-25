@@ -130,7 +130,7 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/%{name}.appdat
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/applications/%{name}-url-handler.desktop
 %{_datadir}/mime/packages/%{name}-workspace.xml
-%{_datadir}/pixmaps/com.visualstudio.code.oss.png
+%{_datadir}/pixmaps/co.posit.positron.png
 %{_metainfodir}/%{name}.appdata.xml
 
 %changelog
