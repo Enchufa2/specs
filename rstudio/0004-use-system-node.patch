@@ -1,50 +1,25 @@
-From 2c8430eeecef1a3d22e4c5302c8e95cbc832e3b7 Mon Sep 17 00:00:00 2001
+From 45a68a7f4c3bb3021dd2a3a9c9712006fa694afb Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?I=C3=B1aki=20=C3=9Acar?= <iucar@fedoraproject.org>
-Date: Tue, 24 Sep 2024 10:54:55 +0200
-Subject: [PATCH] use system node patch
+Date: Mon, 23 Dec 2024 13:21:33 +0100
+Subject: [PATCH] use system node
 
 ---
- src/gwt/build.xml | 27 +--------------------------
- 1 file changed, 1 insertion(+), 26 deletions(-)
+ src/gwt/build.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/gwt/build.xml b/src/gwt/build.xml
-index 34f3fc3..36723f0 100644
+index e0a5c36..1fcd554 100644
 --- a/src/gwt/build.xml
 +++ b/src/gwt/build.xml
-@@ -84,32 +84,7 @@
-    </target>
+@@ -85,7 +85,7 @@
  
     <!-- panmirror typescript library -->
--   <!-- ensure version matches RSTUDIO_NODE_VERSION -->
--   <property name="node.version" value="20.14.0"/>
--   <property name="node.dir" value="../../dependencies/common/node/${node.version}"/>
--   <!-- use yarn from system but will prefer yarn from dependencies if available -->
--   <condition property="yarn.bin" value="yarn">
--     <not>
--        <os family="windows" />
--     </not>
--   </condition>
--   <available
--      property="yarn.bin"
--      value="${node.dir}/bin/yarn"
--      file="${node.dir}/bin/yarn"/>
--   <condition property="yarn.bin" value="${node.dir}/node_modules/yarn/bin/yarn.cmd">
--     <os family="windows" />
--   </condition>
--   <!-- use yarn from /opt/rstudio-tools if installed (typical for Docker) -->
--   <available
--      property="yarn.bin"
--      value="/opt/rstudio-tools/dependencies/common/node/${node.version}/bin/yarn"
--      file="/opt/rstudio-tools/dependencies/common/node/${node.version}/bin/yarn"/>
--   <!-- use yarn from c:/rstudio-tools if installed (typical for Docker on Windows) -->
--   <available
--      property="yarn.bin"
--      value="c:\rstudio-tools\dependencies\common\node\${node.version}\node_modules\yarn\bin\yarn.cmd"
--      file="c:\rstudio-tools\dependencies\common\node\${node.version}\node_modules\yarn\bin\yarn.cmd"/>
-+   <property name="yarn.bin" value="../../node_modules/yarn/bin/yarn"/>
- 
-    <property name="panmirror.dir" value="./lib/quarto/apps/panmirror"/>
-    <property name="panmirror.build.dir" value="./www/js/panmirror"/>
+    <!-- ensure version matches RSTUDIO_NODE_VERSION -->
+-   <property name="node.version" value="20.15.1"/>
++   <property name="node.version" value="20"/>
+    <property name="node.dir" value="../../dependencies/common/node/${node.version}"/>
+    <!-- use yarn from system but will prefer yarn from dependencies if available -->
+    <condition property="yarn.bin" value="yarn">
 -- 
-2.46.0
+2.47.0
 

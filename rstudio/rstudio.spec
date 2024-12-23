@@ -1,4 +1,4 @@
-%global bundled_gwt_version         2.10.0
+%global bundled_gwt_version         2.10.1
 %global bundled_websockets_version  1.0.4
 %global bundled_gin_version         2.1.2
 %global bundled_guava_version       32.1.3
@@ -25,16 +25,15 @@
 %global bundled_qunitjs_version     1.18.0
 %global bundled_xtermjs_version     3.14.5
 %global bundled_inertpol_version    0.2.5
-%global bundled_focusvis_version    5.0.2
 %global bundled_jsyaml_version      5.0.2
 %global mathjax_short               27
 %global rstudio_node_version        20
 %global rstudio_version_major       2024
-%global rstudio_version_minor       09
-%global rstudio_version_patch       1
-%global rstudio_version_suffix      394
-%global rstudio_git_revision_hash   c8fc7aee6dc218d5687553f9041c6b1e5ea268ff
-%global quarto_git_revision_hash    7323f7eb7f0c772b699811aa919b5782634df876
+%global rstudio_version_minor       12
+%global rstudio_version_patch       0
+%global rstudio_version_suffix      467
+%global rstudio_git_revision_hash   cf37a3e5488c937207f992226d255be71f5e3f41
+%global quarto_git_revision_hash    7d1582d06250216d18696145879415e473a2ae4d
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
     export RSTUDIO_VERSION_MAJOR=%{rstudio_version_major} ; \
@@ -53,7 +52,7 @@
 
 Name:           rstudio
 Version:        %{rstudio_version}+%{rstudio_version_suffix}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        RStudio base package
 ExclusiveArch:  %{java_arches}
 
@@ -73,8 +72,6 @@ Patch1:         0001-flatten-tree.patch
 Patch3:         0003-fix-resources-path.patch
 # Use system-provided nodejs binary
 Patch4:         0004-use-system-node.patch
-# https://github.com/rstudio/rstudio/pull/15402
-Patch5:         15402.patch
 
 BuildRequires:  make, cmake, ant
 BuildRequires:  gcc-c++, java-devel, R-core-devel
@@ -152,7 +149,6 @@ Provides:       bundled(js-highlight) = %{bundled_highlightjs_version}
 Provides:       bundled(js-qunit) = %{bundled_qunitjs_version}
 Provides:       bundled(js-xterm) = %{bundled_xtermjs_version}
 Provides:       bundled(js-inert-polyfill) = %{bundled_inertpol_version}
-Provides:       bundled(js-focus-visible) = %{bundled_focusvis_version}
 Provides:       bundled(js-yaml) = %{bundled_jsyaml_version}
 
 %description    common %_description
@@ -192,12 +188,14 @@ rm -rf src/cpp/tests/cpp/tests/vendor
 ln -sf %{_includedir}/catch2 src/cpp/tests/cpp/tests/vendor
 
 %build
-mkdir -p dependencies/common/node/%{rstudio_node_version}/bin && cd "$_"
-ln -s %{_bindir}/node-%{rstudio_node_version} node
-ln -s %{_bindir}/npm-%{rstudio_node_version} npm
-ln -s %{_bindir}/npx-%{rstudio_node_version} npx
-cd - && npm-%{rstudio_node_version} install yarn
-mkdir -p $HOME/.yarn/bin && ln -s node_modules/yarn/bin/yarn $HOME/.yarn/bin/yarn
+mkdir -p dependencies/common/node/%{rstudio_node_version}/bin
+export PATH="$PWD/dependencies/common/node/%{rstudio_node_version}/bin:$PATH"
+pushd dependencies/common/node/%{rstudio_node_version}
+    ln -s %{_bindir}/node-%{rstudio_node_version} bin/node
+    ln -s %{_bindir}/npm-%{rstudio_node_version} bin/npm
+    ln -s %{_bindir}/npx-%{rstudio_node_version} bin/npx
+    ./bin/npm install yarn && ln -s $PWD/node_modules/yarn/bin/yarn bin/yarn
+popd
 %{rstudio_flags}
 %cmake -B build \
     -DRSTUDIO_DISABLE_CHECK_FOR_UPDATES=1 \
@@ -359,6 +357,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Mon Dec 23 2024 Iñaki Úcar <iucar@fedoraproject.org> - 2024.12.0+467-1
+- Update to 2024.12.0+467
+
 * Mon Nov 11 2024 Iñaki Úcar <iucar@fedoraproject.org> - 2024.09.1+394-2
 - Update to 2024.09.1+394
 - Add upstream patch to fix font issues
