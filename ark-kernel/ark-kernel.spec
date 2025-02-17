@@ -36,7 +36,7 @@ sed -i '/offline/d' .cargo/config.toml
 %install
 #%%cargo_install
 install -d -m 0755 %{buildroot}%{_libexecdir}/%{name}/bin
-install -m 0755 target/rpm/{ark,echo} %{buildroot}%{_libexecdir}/%{name}/bin
+install -m 0755 target/rpm/{%{upname},echo} %{buildroot}%{_libexecdir}/%{name}/bin
 find .cargo/registry -type f -name "*.rs" -exec chmod -x {} \;
 
 #%%if %{with check}
@@ -46,9 +46,10 @@ find .cargo/registry -type f -name "*.rs" -exec chmod -x {} \;
 
 %files
 %license LICENSE
-%license crates/ark/NOTICE
+%license crates/%{upname}/NOTICE
 #%%license LICENSE.dependencies
 %doc BUILDING.md
+%doc CHANGELOG.md
 %doc README.md
 %{_libexecdir}/%{name}
 
