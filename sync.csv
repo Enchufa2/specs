@@ -1,3 +1,4 @@
 quarto rstudio False True
 rstudio rstudio True False
 ark-kernel posit-dev True True
+air posit-dev True True
