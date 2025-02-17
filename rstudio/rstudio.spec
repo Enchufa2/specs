@@ -24,15 +24,14 @@
 %global bundled_highlightjs_version c589dcc
 %global bundled_qunitjs_version     1.18.0
 %global bundled_xtermjs_version     3.14.5
-%global bundled_inertpol_version    0.2.5
 %global bundled_jsyaml_version      5.0.2
 %global mathjax_short               27
 %global rstudio_node_version        20
 %global rstudio_version_major       2024
 %global rstudio_version_minor       12
-%global rstudio_version_patch       0
-%global rstudio_version_suffix      467
-%global rstudio_git_revision_hash   cf37a3e5488c937207f992226d255be71f5e3f41
+%global rstudio_version_patch       1
+%global rstudio_version_suffix      563
+%global rstudio_git_revision_hash   27771613951643d8987af2b2fb0c752081a3a853
 %global quarto_git_revision_hash    7d1582d06250216d18696145879415e473a2ae4d
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
@@ -66,8 +65,6 @@ Source2:        %{name}.metainfo.xml
 Patch0:         0000-unbundle-dependencies-common.patch
 # Move resources/app to the root
 Patch1:         0001-flatten-tree.patch
-# Remove the installation prefix from the exec path in the .desktop file
-# Patch2:         0002-fix-rstudio-exec-path.patch
 # We don't want to set RSTUDIO_PACKAGE_BUILD
 Patch3:         0003-fix-resources-path.patch
 # Use system-provided nodejs binary
@@ -148,7 +145,6 @@ Provides:       bundled(js-bn) = %{bundled_jsbn_version}
 Provides:       bundled(js-highlight) = %{bundled_highlightjs_version}
 Provides:       bundled(js-qunit) = %{bundled_qunitjs_version}
 Provides:       bundled(js-xterm) = %{bundled_xtermjs_version}
-Provides:       bundled(js-inert-polyfill) = %{bundled_inertpol_version}
 Provides:       bundled(js-yaml) = %{bundled_jsyaml_version}
 
 %description    common %_description
@@ -186,6 +182,9 @@ ln -sf %{_includedir}/websocketpp src/cpp/ext/websocketpp
 ln -sf %{_includedir}/tl src/cpp/ext/expected
 rm -rf src/cpp/tests/cpp/tests/vendor
 ln -sf %{_includedir}/catch2 src/cpp/tests/cpp/tests/vendor
+
+# https://github.com/rstudio/rstudio/issues/15712
+sed -i '22i #include <stdint.h>' src/cpp/core/include/core/http/Message.hpp
 
 %build
 mkdir -p dependencies/common/node/%{rstudio_node_version}/bin
@@ -357,6 +356,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Mon Feb 17 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2024.12.1+563-1
+- Update to 2024.12.1+563
+
 * Mon Dec 23 2024 Iñaki Úcar <iucar@fedoraproject.org> - 2024.12.0+467-1
 - Update to 2024.12.0+467
 
