@@ -51,7 +51,7 @@
 
 Name:           rstudio
 Version:        %{rstudio_version}+%{rstudio_version_suffix}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        RStudio base package
 ExclusiveArch:  %{java_arches}
 
@@ -75,7 +75,7 @@ BuildRequires:  gcc-c++, java-devel, R-core-devel
 BuildRequires:  nodejs%{rstudio_node_version}
 BuildRequires:  nodejs%{rstudio_node_version}-npm
 BuildRequires:  python3dist(setuptools), git-core
-BuildRequires:  pandoc
+BuildRequires:  quarto
 BuildRequires:  mathjax
 BuildRequires:  lato-fonts, glyphography-newscycle-fonts
 BuildRequires:  boost-devel
@@ -113,7 +113,6 @@ Suggests:       %{name}-server
 Recommends:     git-core
 Recommends:     clang-devel
 Requires:       hunspell
-Requires:       pandoc
 Requires:       quarto
 Requires:       nodejs%{rstudio_node_version}
 Requires:       mathjax
@@ -243,7 +242,7 @@ install -m 0644 \
 # symlink the location where the bundled dependencies should be
 pushd %{buildroot}%{_libexecdir}/%{name}/bin
     mkdir -p pandoc
-    ln -sf %{_bindir}/pandoc pandoc/pandoc
+    ln -sf %{_libexecdir}/quarto/bin/tools/%{_arch}/pandoc pandoc/pandoc
     ln -sf %{_bindir}/node-%{rstudio_node_version} node
 popd
 pushd %{buildroot}%{_libexecdir}/%{name}/resources
@@ -356,6 +355,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Thu Mar 06 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2024.12.1+563-2
+- Link to quarto's pandoc version
+
 * Mon Feb 17 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2024.12.1+563-1
 - Update to 2024.12.1+563
 
