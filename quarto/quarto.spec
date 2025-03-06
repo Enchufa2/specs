@@ -2,15 +2,14 @@
 
 Name:           quarto
 Version:        1.7.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        An open-source scientific and technical publishing system
 
 License:        MIT
 URL:            https://github.com/%{name}-dev/%{name}-cli
 Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 
-BuildRequires:  pandoc
-Requires:       pandoc
+Provides:       bundled(pandoc) = 3.4
 
 %description
 Author using Jupyter notebooks or with plain text markdown in your favorite
@@ -43,8 +42,6 @@ install -D -m 0644 \
     %{buildroot}%{_libexecdir}/%{name}/share/man/%{name}-man.man \
     %{buildroot}%{_mandir}/man1/%{name}.1
 rm -rf %{buildroot}%{_libexecdir}/%{name}/share/man
-# use system pandoc
-ln -sf %{_bindir}/pandoc %{buildroot}%{_libexecdir}/%{name}/bin/tools/$(uname -m)
 
 %files
 %{_bindir}/%{name}
