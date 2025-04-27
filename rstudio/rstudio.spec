@@ -51,7 +51,7 @@
 
 Name:           rstudio
 Version:        %{rstudio_version}+%{rstudio_version_suffix}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        RStudio base package
 ExclusiveArch:  %{java_arches}
 
@@ -358,6 +358,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Sun Apr 27 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2024.12.1+563-3
+- Rebuild for SOCI 4.1
+
 * Thu Mar 06 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2024.12.1+563-2
 - Link to quarto's pandoc version
 
