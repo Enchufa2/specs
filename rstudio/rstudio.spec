@@ -185,6 +185,8 @@ ln -sf %{_includedir}/catch2 src/cpp/tests/cpp/tests/vendor
 
 # https://github.com/rstudio/rstudio/issues/15712
 sed -i '22i #include <stdint.h>' src/cpp/core/include/core/http/Message.hpp
+# https://github.com/rstudio/rstudio/commit/40c5b37b13bde80455996d4127efe4ca216745aa
+sed -i '24i set(CMAKE_CXX_STANDARD 17)' cmake/compiler.cmake
 
 %build
 mkdir -p dependencies/common/node/%{rstudio_node_version}/bin
