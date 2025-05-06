@@ -10,11 +10,16 @@
 %global bundled_guice_version       6.0.0
 %global bundled_aopalliance_version 1.0
 %global bundled_rapidjson_version   5cd62c2
+%global bundled_rapidxml_version    1.13
+%global bundled_expected_version    1.1.0
+%global bundled_fmt_version         11.1.4
+%global bundled_gsllite_version     0.42.0
+%global bundled_hunspell_version    1.7.2
+%global bundled_websocketpp_version 0.8.3
+%global bundled_yamlcpp_version     0.8.0
 %global bundled_treehh_version      2.81
 %global bundled_sundown_version     1.16.0
-%global bundled_hunspell_version    1.3
 %global bundled_synctex_version     1.17
-%global bundled_gsllite_version     0.34.0
 %global bundled_ace_version         1.32.5
 %global bundled_datatables_version  1.10.4
 %global bundled_jquery_version      3.5.1
@@ -26,13 +31,13 @@
 %global bundled_xtermjs_version     3.14.5
 %global bundled_jsyaml_version      5.0.2
 %global mathjax_short               27
-%global rstudio_node_version        20
-%global rstudio_version_major       2024
-%global rstudio_version_minor       12
-%global rstudio_version_patch       1
-%global rstudio_version_suffix      563
-%global rstudio_git_revision_hash   27771613951643d8987af2b2fb0c752081a3a853
-%global quarto_git_revision_hash    7d1582d06250216d18696145879415e473a2ae4d
+%global rstudio_node_version        22
+%global rstudio_version_major       2025
+%global rstudio_version_minor       05
+%global rstudio_version_patch       0
+%global rstudio_version_suffix      496
+%global rstudio_git_revision_hash   f0b76cc00df96fe7f0ee687d4bed0423bc3de1f8
+%global quarto_git_revision_hash    8ee12b5d6bd49c7b212eae894bd011ffbeea1c48
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
     export RSTUDIO_VERSION_MAJOR=%{rstudio_version_major} ; \
@@ -51,7 +56,7 @@
 
 Name:           rstudio
 Version:        %{rstudio_version}+%{rstudio_version_suffix}
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        RStudio base package
 ExclusiveArch:  %{java_arches}
 
@@ -65,8 +70,6 @@ Source2:        %{name}.metainfo.xml
 Patch0:         0000-unbundle-dependencies-common.patch
 # Move resources/app to the root
 Patch1:         0001-flatten-tree.patch
-# We don't want to set RSTUDIO_PACKAGE_BUILD
-Patch3:         0003-fix-resources-path.patch
 # Use system-provided nodejs binary
 Patch4:         0004-use-system-node.patch
 
@@ -80,17 +83,11 @@ BuildRequires:  mathjax
 BuildRequires:  lato-fonts, glyphography-newscycle-fonts
 BuildRequires:  boost-devel
 BuildRequires:  soci-postgresql-devel, soci-sqlite3-devel
-BuildRequires:  rapidxml-devel
 BuildRequires:  pkgconfig(pam)
 BuildRequires:  pkgconfig(systemd)
 BuildRequires:  pkgconfig(uuid)
 BuildRequires:  pkgconfig(openssl)
 BuildRequires:  pkgconfig(fontconfig)
-BuildRequires:  cmake(yaml-cpp)
-BuildRequires:  cmake(websocketpp)
-BuildRequires:  cmake(fmt)
-BuildRequires:  cmake(tl-expected)
-BuildRequires:  catch2-devel
 BuildRequires:  hicolor-icon-theme
 BuildRequires:  desktop-file-utils
 BuildRequires:  libappstream-glib
@@ -115,7 +112,6 @@ Recommends:     git-core
 Recommends:     clang-devel
 Requires:       hunspell
 Requires:       quarto
-Requires:       nodejs%{rstudio_node_version}
 Requires:       mathjax
 Requires:       lato-fonts, glyphography-newscycle-fonts
 
@@ -130,12 +126,17 @@ Provides:       bundled(elemental2) = %{bundled_elemental2_version}
 Provides:       bundled(junit) = %{bundled_junit_version}
 Provides:       bundled(guice) = %{bundled_guice_version}
 Provides:       bundled(aopalliance) = %{bundled_aopalliance_version}
-Provides:       bundled(rapidjson-devel) = %{bundled_rapidjson_version}
-Provides:       bundled(tree-hh-devel) = %{bundled_treehh_version}
-Provides:       bundled(sundown) = %{bundled_sundown_version}
+Provides:       bundled(rapidjson) = %{bundled_rapidjson_version}
+Provides:       bundled(rapidxml) = %{bundled_rapidxml_version}
+Provides:       bundled(tl-expected) = %{bundled_expected_version}
+Provides:       bundled(fmt) = %{bundled_fmt_version}
+Provides:       bundled(gsl-lite) = %{bundled_gsllite_version}
 Provides:       bundled(hunspell) = %{bundled_hunspell_version}
+Provides:       bundled(websocketpp) = %{bundled_websocketpp_version}
+Provides:       bundled(yaml-cpp) = %{bundled_yamlcpp_version}
+Provides:       bundled(tree-hh) = %{bundled_treehh_version}
+Provides:       bundled(sundown) = %{bundled_sundown_version}
 Provides:       bundled(synctex) = %{bundled_synctex_version}
-Provides:       bundled(guidelines-support-library-lite-devel) = %{bundled_gsllite_version}
 Provides:       bundled(js-ace) = %{bundled_ace_version}
 Provides:       bundled(js-datatables) = %{bundled_datatables_version}
 Provides:       bundled(js-jquery) = %{bundled_jquery_version}
@@ -172,21 +173,11 @@ This package provides the Server version, a browser-based interface to the RStud
 tar -xf %{SOURCE1}
 mv quarto-%{quarto_git_revision_hash} src/gwt/lib/quarto
 
-# use system libraries when available
-rm -rf src/cpp/desktop/3rdparty src/cpp/ext/{websocketpp,fmt,expected}
-sed -i '/fmt/d' src/cpp/ext/CMakeLists.txt
-sed -i '/target_link_libraries(rstudio-core/i find_package(fmt REQUIRED)' \
-    src/cpp/core/CMakeLists.txt
-ln -sf %{_includedir}/rapidxml.h src/cpp/core/include/core/rapidxml/rapidxml.hpp
-ln -sf %{_includedir}/websocketpp src/cpp/ext/websocketpp
-ln -sf %{_includedir}/tl src/cpp/ext/expected
-rm -rf src/cpp/tests/cpp/tests/vendor
-ln -sf %{_includedir}/catch2 src/cpp/tests/cpp/tests/vendor
+# copilot
+RSTUDIO_TOOLS_ROOT=$PWD ./dependencies/common/install-copilot-language-server
 
-# https://github.com/rstudio/rstudio/issues/15712
-sed -i '22i #include <stdint.h>' src/cpp/core/include/core/http/Message.hpp
-# https://github.com/rstudio/rstudio/commit/40c5b37b13bde80455996d4127efe4ca216745aa
-sed -i '24i set(CMAKE_CXX_STANDARD 17)' cmake/compiler.cmake
+# fix error: ‘make_unique’ is not a member of ‘boost’
+sed -i '30i #include <boost/make_unique.hpp>' src/cpp/session/modules/rmarkdown/NotebookExec.cpp
 
 %build
 mkdir -p dependencies/common/node/%{rstudio_node_version}/bin
@@ -207,11 +198,12 @@ popd
     -DCMAKE_BUILD_TYPE=Release \
     -DRSTUDIO_USE_SYSTEM_SOCI=Yes \
     -DRSTUDIO_USE_SYSTEM_BOOST=Yes \
-    -DRSTUDIO_USE_SYSTEM_YAML_CPP=Yes \
     -DBOOST_ROOT=%{_prefix} -DBOOST_LIBRARYDIR=%{_lib} \
-    -DRSTUDIO_BOOST_REQUESTED_VERSION=1.81.0 \
+    -DRSTUDIO_BOOST_REQUESTED_VERSION=1.83.0 \
     -DRSTUDIO_NODE_VERSION=%{rstudio_node_version} \
     -DCMAKE_INSTALL_PREFIX=%{_libexecdir}/%{name}
+# https://src.fedoraproject.org/rpms/yaml-cpp/blob/rawhide/f/yaml-cpp-include.patch
+sed -i '4i #include <cstdint>' build/_deps/yaml-cpp-src/src/emitterutils.cpp
 %make_build -C build # ALL
 
 %install
@@ -243,10 +235,10 @@ install -m 0644 \
     %{buildroot}%{_sysconfdir}/pam.d/%{name}
 
 # symlink the location where the bundled dependencies should be
+mv copilot-language-server %{buildroot}%{_libexecdir}/%{name}/bin
 pushd %{buildroot}%{_libexecdir}/%{name}/bin
     mkdir -p pandoc
     ln -sf %{_libexecdir}/quarto/bin/tools/%{_arch}/pandoc pandoc/pandoc
-    ln -sf %{_bindir}/node-%{rstudio_node_version} node
 popd
 pushd %{buildroot}%{_libexecdir}/%{name}/resources
     mv app/{.,}* .. && rm -rf app && ln -s .. app
@@ -303,7 +295,7 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %dir %{_libexecdir}/%{name}
 %dir %{_libexecdir}/%{name}/bin
 %{_libexecdir}/%{name}/bin/pandoc
-%{_libexecdir}/%{name}/bin/node
+%{_libexecdir}/%{name}/bin/copilot-language-server
 %{_libexecdir}/%{name}/bin/postback
 %{_libexecdir}/%{name}/bin/r-ldpath
 %{_libexecdir}/%{name}/bin/rpostback
@@ -358,6 +350,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Tue May 06 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2025.05.0+496-1
+- Update to  2025.05.0+496
+
 * Sun Apr 27 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2024.12.1+563-3
 - Rebuild for SOCI 4.1
 

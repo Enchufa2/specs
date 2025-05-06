@@ -1,17 +1,17 @@
-From bd806dee6f33c7f66e086ee408f94a79e2ac1934 Mon Sep 17 00:00:00 2001
+From 0cbbe18004f64f15a18e84234e63ca88ac930d7c Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?I=C3=B1aki=20=C3=9Acar?= <iucar@fedoraproject.org>
-Date: Tue, 24 Sep 2024 10:42:50 +0200
-Subject: [PATCH] unbundle dependencies common
+Date: Tue, 6 May 2025 16:23:13 +0200
+Subject: [PATCH] unbundle-dependencies-common
 
 ---
- src/cpp/session/CMakeLists.txt | 73 ----------------------------------
- 1 file changed, 73 deletions(-)
+ src/cpp/session/CMakeLists.txt | 71 ----------------------------------
+ 1 file changed, 71 deletions(-)
 
 diff --git a/src/cpp/session/CMakeLists.txt b/src/cpp/session/CMakeLists.txt
-index e5bd743..a84d326 100644
+index 2bf55f9..d0a37bc 100644
 --- a/src/cpp/session/CMakeLists.txt
 +++ b/src/cpp/session/CMakeLists.txt
-@@ -70,28 +70,6 @@ else()
+@@ -76,34 +76,6 @@ else()
  endif()
  
  
@@ -19,11 +19,17 @@ index e5bd743..a84d326 100644
 -foreach(VAR RSTUDIO_DEPENDENCIES_DICTIONARIES_DIR
 -            RSTUDIO_DEPENDENCIES_MATHJAX_DIR
 -            RSTUDIO_DEPENDENCIES_PANDOC_DIR
--            RSTUDIO_DEPENDENCIES_QUARTO_DIR)
+-            RSTUDIO_DEPENDENCIES_QUARTO_DIR
+-            RSTUDIO_DEPENDENCIES_COPILOT_DIR)
 -
 - 
 -   # skip quarto if not enabled
 -   if("${VAR}" STREQUAL "RSTUDIO_DEPENDENCIES_QUARTO_DIR" AND NOT QUARTO_ENABLED)
+-      continue()
+-   endif()
+-
+-   # skip Copilot if not enabled
+-   if("${VAR}" STREQUAL "RSTUDIO_DEPENDENCIES_COPILOT_DIR" AND NOT RSTUDIO_ENABLE_COPILOT)
 -      continue()
 -   endif()
 -
@@ -40,7 +46,7 @@ index e5bd743..a84d326 100644
  # verify embedded packages are available
  foreach(PKG ${RSTUDIO_EMBEDDED_PACKAGES})
     file(GLOB PKG_FILES "${RSTUDIO_DEPENDENCIES_DIR}/common/${PKG}*.tar.gz")
-@@ -691,57 +669,6 @@ if(NOT RSTUDIO_SESSION_WIN32 AND NOT RSESSION_ALTERNATE_BUILD)
+@@ -717,49 +689,6 @@ if(NOT RSTUDIO_SESSION_WIN32 AND NOT RSESSION_ALTERNATE_BUILD)
     install(DIRECTORY "resources/dependencies"
             DESTINATION ${RSTUDIO_INSTALL_SUPPORTING}/resources)
  
@@ -52,36 +58,15 @@ index e5bd743..a84d326 100644
 -   install(DIRECTORY "${RSTUDIO_DEPENDENCIES_MATHJAX_DIR}"
 -           DESTINATION "${RSTUDIO_INSTALL_SUPPORTING}/resources")
 -
--   # install node
--   install(
--      DIRECTORY "${RSTUDIO_DEPENDENCIES_DIR}/common/node/${RSTUDIO_INSTALLED_NODE_VERSION}-patched/"
--      DESTINATION "${RSTUDIO_INSTALL_BIN}/node"
--      USE_SOURCE_PERMISSIONS)
--
 -   # install quarto (or pandoc if quarto disabled)
 -   if(QUARTO_ENABLED)
 -      # install some quarto folders into Resources, as needed
 -      if(APPLE)
--         if (RSTUDIO_ELECTRON)
--            install(DIRECTORY "${RSTUDIO_DEPENDENCIES_QUARTO_DIR}" 
--                  DESTINATION "${RSTUDIO_INSTALL_RESOURCES}/app"
--                  USE_SOURCE_PERMISSIONS
--                  PATTERN ".gitignore"
--                  EXCLUDE)
--         else()
--            install(DIRECTORY "${RSTUDIO_DEPENDENCIES_QUARTO_DIR}"
--                  DESTINATION "${RSTUDIO_INSTALL_BIN}"
--                  USE_SOURCE_PERMISSIONS
--                  PATTERN "*/share"
--                  EXCLUDE
--                  PATTERN ".gitignore"
--                  EXCLUDE)
--            install(DIRECTORY "${RSTUDIO_DEPENDENCIES_QUARTO_DIR}/share" 
--                  DESTINATION "${RSTUDIO_INSTALL_SUPPORTING}/quarto"
--                  USE_SOURCE_PERMISSIONS
--                  PATTERN ".gitignore"
--                  EXCLUDE)
--         endif()
+-         install(DIRECTORY "${RSTUDIO_DEPENDENCIES_QUARTO_DIR}" 
+-               DESTINATION "${RSTUDIO_INSTALL_RESOURCES}/app"
+-               USE_SOURCE_PERMISSIONS
+-               PATTERN ".gitignore"
+-               EXCLUDE)
 -      else()
 -         install(DIRECTORY "${RSTUDIO_DEPENDENCIES_QUARTO_DIR}"
 -               DESTINATION "${RSTUDIO_INSTALL_BIN}"
@@ -95,9 +80,22 @@ index e5bd743..a84d326 100644
 -              USE_SOURCE_PERMISSIONS)
 -   endif()
 -
+-   # install Copilot Language Server
+-   if(RSTUDIO_ENABLE_COPILOT)
+-      if(APPLE)
+-         install(DIRECTORY "${RSTUDIO_DEPENDENCIES_COPILOT_DIR}" 
+-               DESTINATION "${RSTUDIO_INSTALL_RESOURCES}/app"
+-               USE_SOURCE_PERMISSIONS)
+-      else()
+-         install(DIRECTORY "${RSTUDIO_DEPENDENCIES_COPILOT_DIR}"
+-               DESTINATION "${RSTUDIO_INSTALL_BIN}"
+-               USE_SOURCE_PERMISSIONS)
+-      endif()
+-   endif()
+-
     # install embedded packages
     foreach(PKG ${RSTUDIO_EMBEDDED_PACKAGES})
        file(GLOB PKG_FILES "${RSTUDIO_DEPENDENCIES_DIR}/common/${PKG}*.tar.gz")
 -- 
-2.46.0
+2.49.0
 

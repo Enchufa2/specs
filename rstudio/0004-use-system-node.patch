@@ -15,8 +15,8 @@ index e0a5c36..1fcd554 100644
  
     <!-- panmirror typescript library -->
     <!-- ensure version matches RSTUDIO_NODE_VERSION -->
--   <property name="node.version" value="20.15.1"/>
-+   <property name="node.version" value="20"/>
+-   <property name="node.version" value="22.13.1"/>
++   <property name="node.version" value="22"/>
     <property name="node.dir" value="../../dependencies/common/node/${node.version}"/>
     <!-- use yarn from system but will prefer yarn from dependencies if available -->
     <condition property="yarn.bin" value="yarn">
