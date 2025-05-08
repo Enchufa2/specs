@@ -175,6 +175,9 @@ mv quarto-%{quarto_git_revision_hash} src/gwt/lib/quarto
 # system libraries
 ln -sf %{_includedir}/rapidxml.h src/cpp/core/include/core/rapidxml/rapidxml.hpp
 sed -i 's/0.8.3/0.8.2/g' src/cpp/ext/CMakeLists.txt # websocketpp
+sed -i 's/11.1.4/10.2.1/g' src/cpp/ext/CMakeLists.txt # fmt
+sed -i 's/0.8.0/0.7.0/g' src/cpp/ext/CMakeLists.txt # yaml-cpp
+sed -i 's/::yaml-cpp//g' src/cpp/core/CMakeLists.txt
 
 # copilot
 RSTUDIO_TOOLS_ROOT=$PWD ./dependencies/common/install-copilot-language-server
