@@ -9,14 +9,8 @@
 %global bundled_junit_version       4.9b3
 %global bundled_guice_version       6.0.0
 %global bundled_aopalliance_version 1.0
-%global bundled_rapidjson_version   5cd62c2
-%global bundled_rapidxml_version    1.13
-%global bundled_expected_version    1.1.0
-%global bundled_fmt_version         11.1.4
-%global bundled_gsllite_version     0.42.0
 %global bundled_hunspell_version    1.7.2
-%global bundled_websocketpp_version 0.8.3
-%global bundled_yamlcpp_version     0.8.0
+%global bundled_rapidjson_version   24b5e7a
 %global bundled_treehh_version      2.81
 %global bundled_sundown_version     1.16.0
 %global bundled_synctex_version     1.17
@@ -56,7 +50,7 @@
 
 Name:           rstudio
 Version:        %{rstudio_version}+%{rstudio_version_suffix}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        RStudio base package
 ExclusiveArch:  %{java_arches}
 
@@ -66,12 +60,14 @@ URL:            https://github.com/%{name}/%{name}
 Source0:        %{url}/archive/%{rstudio_git_revision_hash}/%{name}-%{version}.tar.gz
 Source1:        https://github.com/quarto-dev/quarto/archive/%{quarto_git_revision_hash}/quarto-%{quarto_git_revision_hash}.tar.gz
 Source2:        %{name}.metainfo.xml
-# Unbundle mathjax, pandoc, hunspell dictionaries, qtsingleapplication
+# Unbundle mathjax, pandoc, hunspell dictionaries
 Patch0:         0000-unbundle-dependencies-common.patch
 # Move resources/app to the root
 Patch1:         0001-flatten-tree.patch
 # Use system-provided nodejs binary
 Patch4:         0004-use-system-node.patch
+# Fixes for ext cmakelists
+Patch5:         0005-ext-fixes.patch
 
 BuildRequires:  make, cmake, ant
 BuildRequires:  gcc-c++, java-devel, R-core-devel
@@ -88,6 +84,15 @@ BuildRequires:  pkgconfig(systemd)
 BuildRequires:  pkgconfig(uuid)
 BuildRequires:  pkgconfig(openssl)
 BuildRequires:  pkgconfig(fontconfig)
+BuildRequires:  rapidxml-devel
+BuildRequires:  cmake(fmt)
+BuildRequires:  cmake(gsl-lite)
+BuildRequires:  pkgconfig(hunspell)
+BuildRequires:  cmake(rapidjson)
+BuildRequires:  cmake(tl-expected)
+BuildRequires:  cmake(websocketpp)
+BuildRequires:  cmake(yaml-cpp)
+BuildRequires:  zlib-static
 BuildRequires:  hicolor-icon-theme
 BuildRequires:  desktop-file-utils
 BuildRequires:  libappstream-glib
@@ -126,14 +131,8 @@ Provides:       bundled(elemental2) = %{bundled_elemental2_version}
 Provides:       bundled(junit) = %{bundled_junit_version}
 Provides:       bundled(guice) = %{bundled_guice_version}
 Provides:       bundled(aopalliance) = %{bundled_aopalliance_version}
-Provides:       bundled(rapidjson) = %{bundled_rapidjson_version}
-Provides:       bundled(rapidxml) = %{bundled_rapidxml_version}
-Provides:       bundled(tl-expected) = %{bundled_expected_version}
-Provides:       bundled(fmt) = %{bundled_fmt_version}
-Provides:       bundled(gsl-lite) = %{bundled_gsllite_version}
 Provides:       bundled(hunspell) = %{bundled_hunspell_version}
-Provides:       bundled(websocketpp) = %{bundled_websocketpp_version}
-Provides:       bundled(yaml-cpp) = %{bundled_yamlcpp_version}
+Provides:       bundled(rapidjson) = %{bundled_rapidjson_version}
 Provides:       bundled(tree-hh) = %{bundled_treehh_version}
 Provides:       bundled(sundown) = %{bundled_sundown_version}
 Provides:       bundled(synctex) = %{bundled_synctex_version}
@@ -173,6 +172,10 @@ This package provides the Server version, a browser-based interface to the RStud
 tar -xf %{SOURCE1}
 mv quarto-%{quarto_git_revision_hash} src/gwt/lib/quarto
 
+# system libraries
+ln -sf %{_includedir}/rapidxml.h src/cpp/core/include/core/rapidxml/rapidxml.hpp
+sed -i 's/0.8.3/0.8.2/g' src/cpp/ext/CMakeLists.txt # websocketpp
+
 # copilot
 RSTUDIO_TOOLS_ROOT=$PWD ./dependencies/common/install-copilot-language-server
 
@@ -189,21 +192,27 @@ pushd dependencies/common/node/%{rstudio_node_version}
     ./bin/npm install yarn && ln -s $PWD/node_modules/yarn/bin/yarn bin/yarn
 popd
 %{rstudio_flags}
-%cmake -B build \
+%cmake -Wno-dev -B build \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=%{_libexecdir}/%{name} \
     -DRSTUDIO_DISABLE_CHECK_FOR_UPDATES=1 \
     -DRSTUDIO_TARGET=Electron \
     -DRSTUDIO_ELECTRON=TRUE \
     -DRSTUDIO_SERVER=TRUE \
     -DQUARTO_ENABLED=FALSE \
-    -DCMAKE_BUILD_TYPE=Release \
+    -DRSTUDIO_USE_SYSTEM_TL_EXPECTED=Yes \
+    -DRSTUDIO_USE_SYSTEM_FMT=Yes \
+    -DRSTUDIO_USE_SYSTEM_GSL_LITE=Yes \
+    -DRSTUDIO_USE_SYSTEM_HUNSPELL=No \
+    -DRSTUDIO_USE_SYSTEM_RAPIDJSON=No \
+    -DRSTUDIO_USE_SYSTEM_WEBSOCKETPP=Yes \
+    -DRSTUDIO_USE_SYSTEM_YAML_CPP=Yes \
+    -DRSTUDIO_USE_SYSTEM_ZLIB=Yes \
     -DRSTUDIO_USE_SYSTEM_SOCI=Yes \
     -DRSTUDIO_USE_SYSTEM_BOOST=Yes \
     -DBOOST_ROOT=%{_prefix} -DBOOST_LIBRARYDIR=%{_lib} \
     -DRSTUDIO_BOOST_REQUESTED_VERSION=1.83.0 \
-    -DRSTUDIO_NODE_VERSION=%{rstudio_node_version} \
-    -DCMAKE_INSTALL_PREFIX=%{_libexecdir}/%{name}
-# https://src.fedoraproject.org/rpms/yaml-cpp/blob/rawhide/f/yaml-cpp-include.patch
-sed -i '4i #include <cstdint>' build/_deps/yaml-cpp-src/src/emitterutils.cpp
+    -DRSTUDIO_NODE_VERSION=%{rstudio_node_version}
 %make_build -C build # ALL
 
 %install
@@ -267,6 +276,7 @@ pushd %{buildroot}%{_libexecdir}/%{name}
         find . -name ${f} -delete
     done
     rm -rf extras COPYING INSTALL NOTICE README.md SOURCE VERSION
+    rm -rf clang_x64_v8_arm64
 popd
 
 # add user rstudio-server
@@ -350,6 +360,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Wed May 07 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2025.05.0+496-2
+- Unbundle some stuff back
+
 * Tue May 06 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2025.05.0+496-1
 - Update to  2025.05.0+496
 

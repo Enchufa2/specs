@@ -1,0 +1,53 @@
+From 36f082a93207b9790170848801fb4f1cc1cac9c5 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?I=C3=B1aki=20=C3=9Acar?= <iucar@fedoraproject.org>
+Date: Thu, 8 May 2025 13:14:55 +0200
+Subject: [PATCH] ext fixes
+
+---
+ src/cpp/ext/CMakeLists.txt | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/src/cpp/ext/CMakeLists.txt b/src/cpp/ext/CMakeLists.txt
+index bc4f84c..b6f3240 100644
+--- a/src/cpp/ext/CMakeLists.txt
++++ b/src/cpp/ext/CMakeLists.txt
+@@ -84,7 +84,7 @@ endfunction()
+ 
+ 
+ # expected
+-dependency(EXPECTED
++dependency(TL_EXPECTED
+    COMMENT    "Single header implementation of std::expected with functional-style extensions."
+    VERSION    "1.1.0"
+    REPOSITORY "https://github.com/TartanLlama/expected"
+@@ -182,7 +182,12 @@ function(fetch)
+ 
+       if(${_PREFIX}_ENABLED)
+          if(RSTUDIO_USE_SYSTEM_DEPENDENCIES OR RSTUDIO_USE_SYSTEM_${_PREFIX})
+-            find_package("${_NAME}" "${${_PREFIX}_VERSION}" REQUIRED)
++            if("${_PREFIX}" STREQUAL "HUNSPELL")
++                find_package(PkgConfig REQUIRED)
++                pkg_check_modules("${_PREFIX}" REQUIRED IMPORTED_TARGET GLOBAL "${_NAME}")
++            else()
++                find_package("${_NAME}" "${${_PREFIX}_VERSION}" REQUIRED GLOBAL)
++            endif()
+          else()
+             set(${_PREFIX}_FETCHED TRUE)
+             FetchContent_Declare("${_NAME}"
+@@ -220,11 +225,11 @@ endfunction()
+ 
+ 
+ fetch(
+-   expected     EXPECTED
++   tl-expected  TL_EXPECTED
+    fmt          FMT
+    gsl-lite     GSL_LITE
+    hunspell     HUNSPELL
+-   rapidjson    RAPIDJSON
++   rapidjson    RAPIDJSON
+    websocketpp  WEBSOCKETPP
+    yaml-cpp     YAML_CPP
+    zlib         ZLIB)
+-- 
+2.49.0
+
