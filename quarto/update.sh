@@ -3,7 +3,7 @@
 cleanver() { echo $1 | sed -e 's/^v//' -e 's/-.*$//'; }
 
 SPEC=$PWD/*.spec
-rm -f *.tar.gz && wget $(rpmspec -P $SPEC | grep Source | awk '{print $2}')
+rm -f *.tar.gz && wget -q $(rpmspec -P $SPEC | grep Source | awk '{print $2}')
 TAR=$PWD/*.tar.gz
 DIR=$(tar tf $TAR | cut -d"/" -f1 | uniq)
 tar xf $TAR
