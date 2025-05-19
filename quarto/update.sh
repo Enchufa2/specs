@@ -1,5 +1,7 @@
 #! /usr/bin/bash
 
+set -e
+
 cleanver() { echo $1 | sed -e 's/^v//' -e 's/-.*$//'; }
 
 SPEC=$PWD/*.spec

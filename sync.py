@@ -38,7 +38,7 @@ def create_issue(pkg, version):
 def update_spec(pkg, version):
     cmd_ver = f'sed -i -E "s/(^Version:\\s*).*/\\1{version}/" {pkg}/{pkg}.spec'
     cmd_rel = f'sed -i "/^Release:/c Release:        1%{{?dist}}" {pkg}/{pkg}.spec'
-    cmd_upd = f'(cd {pkg} && test -f update.sh && ./update.sh || true)'
+    cmd_upd = f'(cd {pkg}; [ ! -f update.sh ] || ./update.sh)'
     check_output(cmd_ver, shell=True)
     check_output(cmd_rel, shell=True)
     check_output(cmd_upd, shell=True)
