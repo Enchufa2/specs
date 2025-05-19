@@ -3,10 +3,10 @@
 cleanver() { echo $1 | sed -e 's/^v//' -e 's/-.*$//'; }
 
 SPEC=$PWD/*.spec
-spectool -g $SPEC
+rm -f *.tar.gz && wget $(rpmspec -P $SPEC | grep Source | awk '{print $2}')
 TAR=$PWD/*.tar.gz
 DIR=$(tar tf $TAR | cut -d"/" -f1 | uniq)
-tar -xf $TAR
+tar xf $TAR
 . $DIR/configuration
 
 sed -i '/bundled(/d' $SPEC
