@@ -1,5 +1,5 @@
 Name:           duckdb
-Version:        1.2.2
+Version:        1.3.0
 Release:        1%{?dist}
 Summary:        An analytical in-process SQL database management system
 
