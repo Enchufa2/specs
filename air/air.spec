@@ -1,7 +1,7 @@
 %bcond_without check
 
 Name:           air
-Version:        0.5.0
+Version:        0.6.0
 Release:        1%{?dist}
 Summary:        An R formatter and language server
 
