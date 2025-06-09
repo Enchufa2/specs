@@ -28,9 +28,9 @@
 %global rstudio_node_version        22
 %global rstudio_version_major       2025
 %global rstudio_version_minor       05
-%global rstudio_version_patch       0
-%global rstudio_version_suffix      496
-%global rstudio_git_revision_hash   f0b76cc00df96fe7f0ee687d4bed0423bc3de1f8
+%global rstudio_version_patch       1
+%global rstudio_version_suffix      513
+%global rstudio_git_revision_hash   ab7c1bc795c7dcff8f26215b832a3649a19fc16c
 %global quarto_git_revision_hash    8ee12b5d6bd49c7b212eae894bd011ffbeea1c48
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
@@ -50,7 +50,7 @@
 
 Name:           rstudio
 Version:        %{rstudio_version}+%{rstudio_version_suffix}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        RStudio base package
 ExclusiveArch:  %{java_arches}
 
@@ -363,6 +363,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Mon Jun 09 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2025.05.1+513-1
+- Update to 2025.05.1+513
+
 * Wed May 07 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2025.05.0+496-2
 - Unbundle some stuff back
 
