@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           quarto
-Version:        1.7.34
+Version:        1.8.24
 Release:        1%{?dist}
 Summary:        An open-source scientific and technical publishing system
 
@@ -9,11 +9,11 @@ License:        MIT
 URL:            https://github.com/%{name}-dev/%{name}-cli
 Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 
-Provides:       bundled(deno)      = 1.46.3
+Provides:       bundled(deno)      = 2.3.1
 Provides:       bundled(deno-dom)  = 0.1.41
 Provides:       bundled(pandoc)    = 3.6.3
-Provides:       bundled(dart-sass) = 1.85.1
-Provides:       bundled(esbuild)   = 0.19.12
+Provides:       bundled(dart-sass) = 1.87.0
+Provides:       bundled(esbuild)   = 0.25.3
 Provides:       bundled(typst)     = 0.13.0
 
 %description
