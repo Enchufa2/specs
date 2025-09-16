@@ -9,6 +9,7 @@ License:        MIT
 URL:            https://github.com/%{name}-dev/%{name}-cli
 Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 
+BuildRequires:  nodejs-npm
 Provides:       bundled(deno)      = 2.3.1
 Provides:       bundled(deno-dom)  = 0.1.41
 Provides:       bundled(pandoc)    = 3.6.3
