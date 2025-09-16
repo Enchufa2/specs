@@ -1,11 +1,11 @@
-%global bundled_gwt_version         2.10.1
+%global bundled_gwt_version         2.12.2
 %global bundled_websockets_version  1.0.4
 %global bundled_gin_version         2.1.2
 %global bundled_guava_version       32.1.3
 %global bundled_jakartaiapi_version 2.0.1
 %global bundled_errorpa_version     2.23.0
 %global bundled_failureacc_version  1.0.2
-%global bundled_elemental2_version  1.0.0
+%global bundled_elemental2_version  1.2.3
 %global bundled_junit_version       4.9b3
 %global bundled_guice_version       6.0.0
 %global bundled_aopalliance_version 1.0
@@ -27,11 +27,11 @@
 %global mathjax_short               27
 %global rstudio_node_version        22
 %global rstudio_version_major       2025
-%global rstudio_version_minor       05
-%global rstudio_version_patch       1
-%global rstudio_version_suffix      513
-%global rstudio_git_revision_hash   ab7c1bc795c7dcff8f26215b832a3649a19fc16c
-%global quarto_git_revision_hash    8ee12b5d6bd49c7b212eae894bd011ffbeea1c48
+%global rstudio_version_minor       09
+%global rstudio_version_patch       0
+%global rstudio_version_suffix      387
+%global rstudio_git_revision_hash   65cea3b88a24221bcd3178ffe74d18671c86ecf1
+%global quarto_git_revision_hash    0424deb0f3e98d997e1b337c65c511e7ee15de5a
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
     export RSTUDIO_VERSION_MAJOR=%{rstudio_version_major} ; \
@@ -66,8 +66,6 @@ Patch0:         0000-unbundle-dependencies-common.patch
 Patch1:         0001-flatten-tree.patch
 # Use system-provided nodejs binary
 Patch4:         0004-use-system-node.patch
-# Fixes for ext cmakelists
-Patch5:         0005-ext-fixes.patch
 
 BuildRequires:  make, cmake, ant
 BuildRequires:  gcc-c++, java-devel, R-core-devel
@@ -174,9 +172,8 @@ mv quarto-%{quarto_git_revision_hash} src/gwt/lib/quarto
 
 # system libraries
 ln -sf %{_includedir}/rapidxml.h src/cpp/core/include/core/rapidxml/rapidxml.hpp
-sed -i 's/0.8.3/0.8.2/g' src/cpp/ext/CMakeLists.txt # websocketpp
-sed -i 's/11.1.4/10.2.1/g' src/cpp/ext/CMakeLists.txt # fmt
-sed -i 's/0.8.0/0.7.0/g' src/cpp/ext/CMakeLists.txt # yaml-cpp
+sed -i 's/"${${_PREFIX}_VERSION}" //g' src/cpp/ext/CMakeLists.txt # rm version requirement
+sed -i 's/::fmt//g' src/cpp/core/CMakeLists.txt
 sed -i 's/::yaml-cpp//g' src/cpp/core/CMakeLists.txt
 
 # copilot
@@ -205,7 +202,7 @@ popd
     -DQUARTO_ENABLED=FALSE \
     -DRSTUDIO_USE_SYSTEM_TL_EXPECTED=Yes \
     -DRSTUDIO_USE_SYSTEM_FMT=Yes \
-    -DRSTUDIO_USE_SYSTEM_GSL_LITE=Yes \
+    -DRSTUDIO_USE_SYSTEM_GSL_LITE=No \
     -DRSTUDIO_USE_SYSTEM_HUNSPELL=No \
     -DRSTUDIO_USE_SYSTEM_RAPIDJSON=No \
     -DRSTUDIO_USE_SYSTEM_WEBSOCKETPP=Yes \
@@ -363,6 +360,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Mon Sep 15 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2025.09.0+387-1
+- Update to 2025.09.0+387
+
 * Mon Jun 09 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2025.05.1+513-1
 - Update to 2025.05.1+513
 
