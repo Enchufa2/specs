@@ -28,9 +28,9 @@
 %global rstudio_node_version        22
 %global rstudio_version_major       2025
 %global rstudio_version_minor       09
-%global rstudio_version_patch       0
-%global rstudio_version_suffix      387
-%global rstudio_git_revision_hash   65cea3b88a24221bcd3178ffe74d18671c86ecf1
+%global rstudio_version_patch       1
+%global rstudio_version_suffix      401
+%global rstudio_git_revision_hash   20de356561bd58a6d88927cce948bd076d06e4ca
 %global quarto_git_revision_hash    0424deb0f3e98d997e1b337c65c511e7ee15de5a
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
@@ -75,7 +75,7 @@ BuildRequires:  python3dist(setuptools), git-core
 BuildRequires:  quarto
 BuildRequires:  mathjax
 BuildRequires:  lato-fonts, glyphography-newscycle-fonts
-BuildRequires:  boost-devel
+BuildRequires:  boost-devel, boost-url
 BuildRequires:  soci-postgresql-devel, soci-sqlite3-devel
 BuildRequires:  pkgconfig(pam)
 BuildRequires:  pkgconfig(systemd)
@@ -176,8 +176,11 @@ sed -i 's/"${${_PREFIX}_VERSION}" //g' src/cpp/ext/CMakeLists.txt # rm version r
 sed -i 's/::fmt//g' src/cpp/core/CMakeLists.txt
 sed -i 's/::yaml-cpp//g' src/cpp/core/CMakeLists.txt
 
-# copilot
-RSTUDIO_TOOLS_ROOT=$PWD ./dependencies/common/install-copilot-language-server
+# additional dependencies
+export RSTUDIO_TOOLS_ROOT=$PWD/dependencies/common && pushd $RSTUDIO_TOOLS_ROOT
+    ./install-gwt
+    ./install-copilot-language-server
+popd
 
 # fix error: ‘make_unique’ is not a member of ‘boost’
 sed -i '30i #include <boost/make_unique.hpp>' src/cpp/session/modules/rmarkdown/NotebookExec.cpp
@@ -244,7 +247,7 @@ install -m 0644 \
     %{buildroot}%{_sysconfdir}/pam.d/%{name}
 
 # symlink the location where the bundled dependencies should be
-mv copilot-language-server %{buildroot}%{_libexecdir}/%{name}/bin
+mv dependencies/common/copilot-language-server %{buildroot}%{_libexecdir}/%{name}/bin
 pushd %{buildroot}%{_libexecdir}/%{name}/bin
     mkdir -p pandoc
     ln -sf %{_libexecdir}/quarto/bin/tools/%{_arch}/pandoc pandoc/pandoc
@@ -360,6 +363,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Mon Oct 06 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2025.09.1+401-1
+- Update to 2025.09.1+401
+
 * Mon Sep 15 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2025.09.0+387-1
 - Update to 2025.09.0+387
 
