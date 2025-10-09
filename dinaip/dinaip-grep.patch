@@ -1,0 +1,22 @@
+From 97d169306f098bce3a1765c82464bff5bf14db36 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Antonio=20Di=CC=81az=20Correa?= <adiaz@full-on-net.com>
+Date: Mon, 11 Nov 2024 01:23:23 +0100
+Subject: [PATCH] Replace Smartmatch with grep
+
+---
+ source/dinaip.pl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/source/dinaip.pl b/source/dinaip.pl
+index 87a342f..ad92f39 100755
+--- a/source/dinaip.pl
++++ b/source/dinaip.pl
+@@ -352,7 +352,7 @@ sub eliminarZona{
+ 		}
+ 	}
+ 	else{
+-		unless ($zonas  ~~ @dominios_vigilados){
++		unless (grep { $_ eq $zonas } @dominios_vigilados){
+ 			print "Error. El dominio $zonas no esta siendo vigilado\n";
+ 			exit(1);
+ 		}

@@ -1,0 +1,13 @@
+[Unit]
+Description=dinaip - DDNS service by Dinahosting
+ 
+[Service]
+EnvironmentFile=/etc/dinaip
+Type=forking
+ExecStart=/usr/bin/dinaip -u ${DINAIP_USER} -p ${DINAIP_PASSWD}
+ExecStop=/usr/bin/dinaip -d
+PIDFile=/var/run/dinaip.pid
+Restart=on-failure
+ 
+[Install]
+WantedBy=multi-user.target

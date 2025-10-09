@@ -1,0 +1,8 @@
+/var/log/dinaip.log {
+    rotate 7
+    daily
+    copytruncate
+    compress
+    missingok
+    notifempty
+}
