@@ -35,6 +35,7 @@ sed -i '26i #include <cstdint>' third_party/thrift/thrift/transport/TTransport.h
     -DCMAKE_BUILD_TYPE=Release \
     -DOVERRIDE_GIT_DESCRIBE=v%{version} \
     -DDUCKDB_EXTENSION_CONFIGS=".github/config/bundled_extensions.cmake" \
+    -DSET_DUCKDB_LIBRARY_VERSION=true \
     -DINSTALL_BIN_DIR=%{_bindir} \
     -DINSTALL_LIB_DIR=%{_libdir} \
     -DINSTALL_INCLUDE_DIR=%{_includedir} \
@@ -48,11 +49,12 @@ sed -i '26i #include <cstdint>' third_party/thrift/thrift/transport/TTransport.h
 %doc README.md
 %license LICENSE
 %{_bindir}/%{name}
+%{_libdir}/lib%{name}.so.*
+
+%files devel
 %{_libdir}/lib%{name}.so
 %{_libdir}/lib%{name}_*.a
 %{_libdir}/lib*_extension.a
-
-%files devel
 %{_includedir}/%{name}
 %{_includedir}/%{name}.h*
 %{_libdir}/cmake/%{name}
