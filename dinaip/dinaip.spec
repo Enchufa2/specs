@@ -3,7 +3,7 @@
 
 Name:           dinaip
 Version:        0^1.git%{short_commit}
-Release:        %autorelease
+Release:        1%{?dist}%{?buildtag}
 Summary:        Haz que tu dominio resuelva en una IP dinámica
 
 License:        LGPL-3.0-or-later
