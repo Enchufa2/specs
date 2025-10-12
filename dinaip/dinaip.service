@@ -1,5 +1,7 @@
 [Unit]
 Description=dinaip - DDNS service by Dinahosting
+After=network-online.target
+Wants=network-online.target
  
 [Service]
 EnvironmentFile=/etc/dinaip
