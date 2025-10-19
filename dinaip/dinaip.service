@@ -8,7 +8,7 @@ EnvironmentFile=/etc/dinaip
 Type=forking
 ExecStart=/usr/bin/dinaip -u ${DINAIP_USER} -p ${DINAIP_PASSWD}
 ExecStop=/usr/bin/dinaip -d
-PIDFile=/var/run/dinaip.pid
+PIDFile=/run/dinaip.pid
 Restart=on-failure
  
 [Install]

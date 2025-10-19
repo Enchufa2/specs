@@ -31,6 +31,7 @@ cambios que se van dando.
 %prep
 %autosetup -p1 -n %{name}-linux-shell-%{commit}
 rm source/install.sh
+sed -i 's@/var/run@/run@' source/Demonio.pm
 
 %build
 
