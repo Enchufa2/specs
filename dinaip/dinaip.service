@@ -6,6 +6,7 @@ Wants=network-online.target
 [Service]
 EnvironmentFile=/etc/dinaip
 Type=forking
+ExecStartPre=-/bin/sleep 10
 ExecStart=/usr/bin/dinaip -u ${DINAIP_USER} -p ${DINAIP_PASSWD}
 ExecStop=/usr/bin/dinaip -d
 PIDFile=/run/dinaip.pid
