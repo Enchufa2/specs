@@ -28,9 +28,9 @@
 %global rstudio_node_version        22
 %global rstudio_version_major       2025
 %global rstudio_version_minor       09
-%global rstudio_version_patch       1
-%global rstudio_version_suffix      401
-%global rstudio_git_revision_hash   20de356561bd58a6d88927cce948bd076d06e4ca
+%global rstudio_version_patch       2
+%global rstudio_version_suffix      418
+%global rstudio_git_revision_hash   12f6d5e22720bd78dbd926bb344efe12d0dce83d
 %global quarto_git_revision_hash    0424deb0f3e98d997e1b337c65c511e7ee15de5a
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
@@ -363,6 +363,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Mon Nov 03 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2025.09.2+418-1
+- Update to 2025.09.2+418-1
+
 * Mon Oct 06 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2025.09.1+401-1
 - Update to 2025.09.1+401
 
