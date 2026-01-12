@@ -1,14 +1,14 @@
-From 0cbbe18004f64f15a18e84234e63ca88ac930d7c Mon Sep 17 00:00:00 2001
+From 512738e610c0ef273aa80e2b5b43126ecd13ddb1 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?I=C3=B1aki=20=C3=9Acar?= <iucar@fedoraproject.org>
-Date: Tue, 6 May 2025 16:23:13 +0200
-Subject: [PATCH] unbundle-dependencies-common
+Date: Mon, 12 Jan 2026 12:13:17 +0100
+Subject: [PATCH] asdf
 
 ---
- src/cpp/session/CMakeLists.txt | 71 ----------------------------------
- 1 file changed, 71 deletions(-)
+ src/cpp/session/CMakeLists.txt | 77 ----------------------------------
+ 1 file changed, 77 deletions(-)
 
 diff --git a/src/cpp/session/CMakeLists.txt b/src/cpp/session/CMakeLists.txt
-index 2bf55f9..d0a37bc 100644
+index 305345a..51745a3 100644
 --- a/src/cpp/session/CMakeLists.txt
 +++ b/src/cpp/session/CMakeLists.txt
 @@ -76,34 +76,6 @@ else()
@@ -46,7 +46,7 @@ index 2bf55f9..d0a37bc 100644
  # verify embedded packages are available
  foreach(PKG ${RSTUDIO_EMBEDDED_PACKAGES})
     file(GLOB PKG_FILES "${RSTUDIO_DEPENDENCIES_DIR}/common/${PKG}*.tar.gz")
-@@ -717,49 +689,6 @@ if(NOT RSTUDIO_SESSION_WIN32 AND NOT RSESSION_ALTERNATE_BUILD)
+@@ -724,55 +696,6 @@ if(NOT RSTUDIO_SESSION_WIN32 AND NOT RSESSION_ALTERNATE_BUILD)
     install(DIRECTORY "resources/dependencies"
             DESTINATION ${RSTUDIO_INSTALL_SUPPORTING}/resources)
  
@@ -57,6 +57,12 @@ index 2bf55f9..d0a37bc 100644
 -   # install mathjax for local html preview
 -   install(DIRECTORY "${RSTUDIO_DEPENDENCIES_MATHJAX_DIR}"
 -           DESTINATION "${RSTUDIO_INSTALL_SUPPORTING}/resources")
+-
+-   # install node
+-   install(
+-      DIRECTORY "${RSTUDIO_DEPENDENCIES_DIR}/common/node/${RSTUDIO_INSTALLED_NODE_VERSION}-installed/"
+-      DESTINATION "${RSTUDIO_INSTALL_BIN}/node"
+-      USE_SOURCE_PERMISSIONS)
 -
 -   # install quarto (or pandoc if quarto disabled)
 -   if(QUARTO_ENABLED)
@@ -97,5 +103,5 @@ index 2bf55f9..d0a37bc 100644
     foreach(PKG ${RSTUDIO_EMBEDDED_PACKAGES})
        file(GLOB PKG_FILES "${RSTUDIO_DEPENDENCIES_DIR}/common/${PKG}*.tar.gz")
 -- 
-2.49.0
+2.51.1
 

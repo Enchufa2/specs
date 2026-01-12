@@ -24,14 +24,15 @@
 %global bundled_qunitjs_version     1.18.0
 %global bundled_xtermjs_version     3.14.5
 %global bundled_jsyaml_version      5.0.2
+%global bundled_jsdiff_version      8.0.2
 %global mathjax_short               27
 %global rstudio_node_version        22
-%global rstudio_version_major       2025
-%global rstudio_version_minor       09
-%global rstudio_version_patch       2
-%global rstudio_version_suffix      418
-%global rstudio_git_revision_hash   12f6d5e22720bd78dbd926bb344efe12d0dce83d
-%global quarto_git_revision_hash    0424deb0f3e98d997e1b337c65c511e7ee15de5a
+%global rstudio_version_major       2026
+%global rstudio_version_minor       01
+%global rstudio_version_patch       0
+%global rstudio_version_suffix      392
+%global rstudio_git_revision_hash   49fbea7a09a468fc4d1993ca376fd5b971cb58e3
+%global quarto_git_revision_hash    591b3520eafbb4da7b26b9f31aac6948801f19d8
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
     export RSTUDIO_VERSION_MAJOR=%{rstudio_version_major} ; \
@@ -144,6 +145,7 @@ Provides:       bundled(js-highlight) = %{bundled_highlightjs_version}
 Provides:       bundled(js-qunit) = %{bundled_qunitjs_version}
 Provides:       bundled(js-xterm) = %{bundled_xtermjs_version}
 Provides:       bundled(js-yaml) = %{bundled_jsyaml_version}
+Provides:       bundled(js-jsdiff) = %{bundled_jsdiff_version}
 
 %description    common %_description
 This package provides common files for %{name}-desktop and %{name}-server.
@@ -180,6 +182,8 @@ sed -i 's/::yaml-cpp//g' src/cpp/core/CMakeLists.txt
 export RSTUDIO_TOOLS_ROOT=$PWD/dependencies/common && pushd $RSTUDIO_TOOLS_ROOT
     ./install-gwt
     ./install-copilot-language-server
+    platform=$([ "%{_arch}" = "x86_64" ] && echo "arm64" || echo "x64")
+    for f in darwin win32 $platform; do find . -name $f -exec rm -rf {} +; done
 popd
 
 # fix error: ‘make_unique’ is not a member of ‘boost’
@@ -247,7 +251,7 @@ install -m 0644 \
     %{buildroot}%{_sysconfdir}/pam.d/%{name}
 
 # symlink the location where the bundled dependencies should be
-mv dependencies/common/copilot-language-server %{buildroot}%{_libexecdir}/%{name}/bin
+mv dependencies/common/copilot-language-server-js %{buildroot}%{_libexecdir}/%{name}/bin
 pushd %{buildroot}%{_libexecdir}/%{name}/bin
     mkdir -p pandoc
     ln -sf %{_libexecdir}/quarto/bin/tools/%{_arch}/pandoc pandoc/pandoc
@@ -307,8 +311,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %doc README.md
 %dir %{_libexecdir}/%{name}
 %dir %{_libexecdir}/%{name}/bin
+%{_libexecdir}/%{name}/bin/debuginfo
 %{_libexecdir}/%{name}/bin/pandoc
-%{_libexecdir}/%{name}/bin/copilot-language-server
+%{_libexecdir}/%{name}/bin/copilot-language-server-js
 %{_libexecdir}/%{name}/bin/postback
 %{_libexecdir}/%{name}/bin/r-ldpath
 %{_libexecdir}/%{name}/bin/rpostback
@@ -352,7 +357,6 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 
 %files server
 %{_bindir}/%{name}-server
-%{_libexecdir}/%{name}/bin/crash-handler-proxy
 %{_libexecdir}/%{name}/bin/rserver
 %{_libexecdir}/%{name}/bin/rserver-pam
 %{_libexecdir}/%{name}/bin/rserver-url
@@ -363,8 +367,11 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Mon Jan 12 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.01.0+392-1
+- Update to 2026.01.0+392
+
 * Mon Nov 03 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2025.09.2+418-1
-- Update to 2025.09.2+418-1
+- Update to 2025.09.2+418
 
 * Mon Oct 06 2025 Iñaki Úcar <iucar@fedoraproject.org> - 2025.09.1+401-1
 - Update to 2025.09.1+401
