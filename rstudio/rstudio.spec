@@ -45,6 +45,8 @@
 
 # Disable ninja
 %global _cmake_generator "Unix Makefiles"
+# Do not fail on build-id too small on arm64 for copilot
+%undefine _missing_build_ids_terminate_build
 # Disable deprecated openssl engine
 %global _preprocessor_defines %{_preprocessor_defines} -DOPENSSL_NO_ENGINE
 # Do not build non-lto objects, as that may result in
