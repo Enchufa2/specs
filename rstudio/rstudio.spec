@@ -191,6 +191,13 @@ popd
 
 # fix error: ‘make_unique’ is not a member of ‘boost’
 sed -i '30i #include <boost/make_unique.hpp>' src/cpp/session/modules/rmarkdown/NotebookExec.cpp
+# fix error: ‘deadline_timer’ is not a member of ‘boost::asio’
+sed -i '16i #include <boost/asio/deadline_timer.hpp>' src/cpp/core/ExponentialBackoff.cpp
+sed -i '30i #include <boost/asio/deadline_timer.hpp>' src/cpp/core/include/core/FileLock.hpp
+sed -i '37i #include <boost/asio/deadline_timer.hpp>' src/cpp/core/system/PosixChildProcess.cpp
+sed -i '24i #include <boost/asio/deadline_timer.hpp>' src/cpp/session/SessionConsoleProcessSocketTests.cpp
+# fix error: ‘boost::posix_time::seconds’ has not been declared
+sed -i '30i #include <boost/date_time/posix_time/posix_time.hpp>' src/cpp/core/include/core/FileLock.hpp
 
 %build
 mkdir -p dependencies/common/node/%{rstudio_node_version}/bin
@@ -289,6 +296,9 @@ pushd %{buildroot}%{_libexecdir}/%{name}
     rm -rf clang_x64_v8_arm64
 popd
 
+# hack to avoid debuginfo, restored in the file list
+chmod 0644 %{buildroot}%{_libexecdir}/%{name}/libvulkan.so.1
+
 # add user rstudio-server
 %pre server
 getent group %{name}-server >/dev/null || groupadd -r %{name}-server
@@ -341,7 +351,7 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %{_libexecdir}/%{name}/libGLESv2.so
 %{_libexecdir}/%{name}/libffmpeg.so
 %{_libexecdir}/%{name}/libvk_swiftshader.so
-%{_libexecdir}/%{name}/libvulkan.so.1
+%attr(0755,root,root) %{_libexecdir}/%{name}/libvulkan.so.1
 %{_libexecdir}/%{name}/locales
 %{_libexecdir}/%{name}/resources.pak
 %{_libexecdir}/%{name}/%{name}
