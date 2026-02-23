@@ -29,9 +29,9 @@
 %global rstudio_node_version        22
 %global rstudio_version_major       2026
 %global rstudio_version_minor       01
-%global rstudio_version_patch       0
-%global rstudio_version_suffix      392
-%global rstudio_git_revision_hash   49fbea7a09a468fc4d1993ca376fd5b971cb58e3
+%global rstudio_version_patch       1
+%global rstudio_version_suffix      403
+%global rstudio_git_revision_hash   0e924abb984501b0d66b204ea06b60fc7813275a
 %global quarto_git_revision_hash    591b3520eafbb4da7b26b9f31aac6948801f19d8
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
@@ -43,6 +43,8 @@
     export GIT_COMMIT=%{rstudio_git_revision_hash} ; \
     export PACKAGE_OS=$(cat /etc/redhat-release)
 
+# Disable ninja
+%global _cmake_generator "Unix Makefiles"
 # Disable deprecated openssl engine
 %global _preprocessor_defines %{_preprocessor_defines} -DOPENSSL_NO_ENGINE
 # Do not build non-lto objects, as that may result in
@@ -114,6 +116,7 @@ Suggests:       %{name}-desktop
 Suggests:       %{name}-server
 Recommends:     git-core
 Recommends:     clang-devel
+Recommends:     air
 Requires:       hunspell
 Requires:       quarto
 Requires:       mathjax
@@ -367,6 +370,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Mon Feb 23 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.01.1+403-1
+- Update to 2026.01.1+403
+
 * Mon Jan 12 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.01.0+392-1
 - Update to 2026.01.0+392
 
