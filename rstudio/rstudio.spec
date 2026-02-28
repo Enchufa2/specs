@@ -333,6 +333,7 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %{_libexecdir}/%{name}/bin/debuginfo
 %{_libexecdir}/%{name}/bin/pandoc
 %{_libexecdir}/%{name}/bin/copilot-language-server-js
+%{_libexecdir}/%{name}/bin/node
 %{_libexecdir}/%{name}/bin/postback
 %{_libexecdir}/%{name}/bin/r-ldpath
 %{_libexecdir}/%{name}/bin/rpostback
