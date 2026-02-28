@@ -55,7 +55,7 @@
 
 Name:           rstudio
 Version:        %{rstudio_version}+%{rstudio_version_suffix}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        RStudio base package
 ExclusiveArch:  %{java_arches}
 
@@ -178,6 +178,7 @@ tar -xf %{SOURCE1}
 mv quarto-%{quarto_git_revision_hash} src/gwt/lib/quarto
 
 # system libraries
+sed -i '/Boost_USE_STATIC_LIBS/d' src/cpp/CMakeLists.txt
 ln -sf %{_includedir}/rapidxml.h src/cpp/core/include/core/rapidxml/rapidxml.hpp
 sed -i 's/"${${_PREFIX}_VERSION}" //g' src/cpp/ext/CMakeLists.txt # rm version requirement
 sed -i 's/::fmt//g' src/cpp/core/CMakeLists.txt
@@ -215,6 +216,7 @@ popd
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=%{_libexecdir}/%{name} \
     -DRSTUDIO_DISABLE_CHECK_FOR_UPDATES=1 \
+    -DRSTUDIO_PACKAGE_BUILD=1 \
     -DRSTUDIO_TARGET=Electron \
     -DRSTUDIO_ELECTRON=TRUE \
     -DRSTUDIO_SERVER=TRUE \
