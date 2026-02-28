@@ -55,7 +55,7 @@
 
 Name:           rstudio
 Version:        %{rstudio_version}+%{rstudio_version_suffix}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        RStudio base package
 ExclusiveArch:  %{java_arches}
 
@@ -120,6 +120,7 @@ Recommends:     git-core
 Recommends:     clang-devel
 Recommends:     air
 Requires:       hunspell
+Requires:       nodejs%{rstudio_node_version}
 Requires:       quarto
 Requires:       mathjax
 Requires:       lato-fonts, glyphography-newscycle-fonts
@@ -269,6 +270,7 @@ mv dependencies/common/copilot-language-server-js %{buildroot}%{_libexecdir}/%{n
 pushd %{buildroot}%{_libexecdir}/%{name}/bin
     mkdir -p pandoc
     ln -sf %{_libexecdir}/quarto/bin/tools/%{_arch}/pandoc pandoc/pandoc
+    ln -sf %{_bindir}/node node
 popd
 pushd %{buildroot}%{_libexecdir}/%{name}/resources
     mv app/{.,}* .. && rm -rf app && ln -s .. app
