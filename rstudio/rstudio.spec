@@ -29,9 +29,9 @@
 %global rstudio_node_version        22
 %global rstudio_version_major       2026
 %global rstudio_version_minor       01
-%global rstudio_version_patch       1
-%global rstudio_version_suffix      403
-%global rstudio_git_revision_hash   0e924abb984501b0d66b204ea06b60fc7813275a
+%global rstudio_version_patch       2
+%global rstudio_version_suffix      418
+%global rstudio_git_revision_hash   1d903d3bd61a40d82bf71aad8471a5a388cc1f73
 %global quarto_git_revision_hash    591b3520eafbb4da7b26b9f31aac6948801f19d8
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
@@ -55,7 +55,7 @@
 
 Name:           rstudio
 Version:        %{rstudio_version}+%{rstudio_version_suffix}
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        RStudio base package
 ExclusiveArch:  %{java_arches}
 
@@ -387,6 +387,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Tue Mar 31 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.01.2+418-1
+- Update to 2026.01.2+418
+
 * Mon Feb 23 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.01.1+403-1
 - Update to 2026.01.1+403
 
