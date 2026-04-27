@@ -16,6 +16,8 @@ Provides:       bundled(dart-sass) = 1.87.0
 Provides:       bundled(esbuild)   = 0.25.10
 Provides:       bundled(typst)     = 0.14.2
 BuildRequires:  nodejs-npm
+BuildRequires:  cargo
+BuildRequires:  pkgconfig(openssl)
 
 %description
 Author using Jupyter notebooks or with plain text markdown in your favorite
