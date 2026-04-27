@@ -14,7 +14,7 @@
 %global bundled_treehh_version      2.81
 %global bundled_sundown_version     1.16.0
 %global bundled_synctex_version     1.17
-%global bundled_ace_version         1.32.5
+%global bundled_ace_version         1.43.5
 %global bundled_datatables_version  1.10.4
 %global bundled_jquery_version      3.5.1
 %global bundled_pdfjs_version       1.3.158
@@ -22,17 +22,17 @@
 %global bundled_jsbn_version        1.1
 %global bundled_highlightjs_version c589dcc
 %global bundled_qunitjs_version     1.18.0
-%global bundled_xtermjs_version     3.14.5
+%global bundled_xtermjs_version     6.0.0
 %global bundled_jsyaml_version      5.0.2
 %global bundled_jsdiff_version      8.0.2
 %global mathjax_short               27
 %global rstudio_node_version        22
 %global rstudio_version_major       2026
-%global rstudio_version_minor       01
-%global rstudio_version_patch       2
-%global rstudio_version_suffix      418
-%global rstudio_git_revision_hash   1d903d3bd61a40d82bf71aad8471a5a388cc1f73
-%global quarto_git_revision_hash    591b3520eafbb4da7b26b9f31aac6948801f19d8
+%global rstudio_version_minor       04
+%global rstudio_version_patch       0
+%global rstudio_version_suffix      526
+%global rstudio_git_revision_hash   57f8932a2d8c5a4a8c0d30ad918ec77f9f2dacaa
+%global quarto_git_revision_hash    8c1669f3095c5afee6bcd98a659d51a43300bda9
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
     export RSTUDIO_VERSION_MAJOR=%{rstudio_version_major} ; \
@@ -387,6 +387,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Mon Apr 27 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.04.0+526-1
+- Update to 2026.04.0+526
+
 * Tue Mar 31 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.01.2+418-1
 - Update to 2026.01.2+418
 
