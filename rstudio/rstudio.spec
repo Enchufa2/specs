@@ -55,7 +55,7 @@
 
 Name:           rstudio
 Version:        %{rstudio_version}+%{rstudio_version_suffix}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        RStudio base package
 ExclusiveArch:  %{java_arches}
 
@@ -300,10 +300,9 @@ pushd %{buildroot}%{_libexecdir}/%{name}
     done
     rm -rf extras COPYING INSTALL NOTICE README.md SOURCE VERSION
     rm -rf clang_x64_v8_arm64
+    # hack to avoid debuginfo, restored in the file list
+    chmod 0644 chrome* lib*.so*
 popd
-
-# hack to avoid debuginfo, restored in the file list
-chmod 0644 %{buildroot}%{_libexecdir}/%{name}/libvulkan.so.1
 
 # add user rstudio-server
 %pre server
@@ -349,15 +348,15 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %{_libexecdir}/%{name}/.webpack
 %{_libexecdir}/%{name}/bin/diagnostics
 %{_libexecdir}/%{name}/bin/%{name}-backtrace.sh
-%{_libexecdir}/%{name}/chrome-sandbox
 %{_libexecdir}/%{name}/chrome_100_percent.pak
 %{_libexecdir}/%{name}/chrome_200_percent.pak
-%{_libexecdir}/%{name}/chrome_crashpad_handler
+%attr(0755,root,root) %{_libexecdir}/%{name}/chrome-sandbox
+%attr(0755,root,root) %{_libexecdir}/%{name}/chrome_crashpad_handler
 %{_libexecdir}/%{name}/icudtl.dat
-%{_libexecdir}/%{name}/libEGL.so
-%{_libexecdir}/%{name}/libGLESv2.so
-%{_libexecdir}/%{name}/libffmpeg.so
-%{_libexecdir}/%{name}/libvk_swiftshader.so
+%attr(0755,root,root) %{_libexecdir}/%{name}/libEGL.so
+%attr(0755,root,root) %{_libexecdir}/%{name}/libGLESv2.so
+%attr(0755,root,root) %{_libexecdir}/%{name}/libffmpeg.so
+%attr(0755,root,root) %{_libexecdir}/%{name}/libvk_swiftshader.so
 %attr(0755,root,root) %{_libexecdir}/%{name}/libvulkan.so.1
 %{_libexecdir}/%{name}/locales
 %{_libexecdir}/%{name}/resources.pak
@@ -387,6 +386,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Thu May 14 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.04.0+526-2
+- Disable debuginfo in several precompiled components
+
 * Mon Apr 27 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.04.0+526-1
 - Update to 2026.04.0+526
 
