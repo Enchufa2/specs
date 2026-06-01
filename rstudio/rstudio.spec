@@ -15,7 +15,6 @@
 %global bundled_sundown_version     1.16.0
 %global bundled_synctex_version     1.17
 %global bundled_ace_version         1.43.5
-%global bundled_datatables_version  1.10.4
 %global bundled_jquery_version      3.5.1
 %global bundled_pdfjs_version       1.3.158
 %global bundled_revealjs_version    2.4.0
@@ -28,11 +27,11 @@
 %global mathjax_short               27
 %global rstudio_node_version        22
 %global rstudio_version_major       2026
-%global rstudio_version_minor       04
+%global rstudio_version_minor       05
 %global rstudio_version_patch       0
-%global rstudio_version_suffix      526
-%global rstudio_git_revision_hash   57f8932a2d8c5a4a8c0d30ad918ec77f9f2dacaa
-%global quarto_git_revision_hash    8c1669f3095c5afee6bcd98a659d51a43300bda9
+%global rstudio_version_suffix      218
+%global rstudio_git_revision_hash   89f6cef5d8593410108e06a82f290fd952d506c1
+%global quarto_git_revision_hash    95272d691960774e76540d4a030e3aa1d8979ff6
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
     export RSTUDIO_VERSION_MAJOR=%{rstudio_version_major} ; \
@@ -55,7 +54,7 @@
 
 Name:           rstudio
 Version:        %{rstudio_version}+%{rstudio_version_suffix}
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        RStudio base package
 ExclusiveArch:  %{java_arches}
 
@@ -142,7 +141,6 @@ Provides:       bundled(tree-hh) = %{bundled_treehh_version}
 Provides:       bundled(sundown) = %{bundled_sundown_version}
 Provides:       bundled(synctex) = %{bundled_synctex_version}
 Provides:       bundled(js-ace) = %{bundled_ace_version}
-Provides:       bundled(js-datatables) = %{bundled_datatables_version}
 Provides:       bundled(js-jquery) = %{bundled_jquery_version}
 Provides:       bundled(js-pdf) = %{bundled_pdfjs_version}
 Provides:       bundled(js-reveal) = %{bundled_revealjs_version}
@@ -285,8 +283,6 @@ pushd %{buildroot}%{_libexecdir}/%{name}/resources
         done
     popd
     # move and symlink bundled libraries
-    mv grid/datatables grid/datatables.bundled
-    ln -sf ./datatables.bundled grid/datatables
     mv pdfjs pdfjs.bundled
     ln -sf ./pdfjs.bundled pdfjs
     mv presentation/revealjs presentation/revealjs.bundled
@@ -386,6 +382,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Mon Jun 01 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.05.0+218-1
+- Update to 2026.05.0+218
+
 * Thu May 14 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.04.0+526-2
 - Disable debuginfo in several precompiled components
 
