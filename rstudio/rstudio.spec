@@ -188,7 +188,7 @@ export RSTUDIO_TOOLS_ROOT=$PWD/dependencies/common && pushd $RSTUDIO_TOOLS_ROOT
     ./install-gwt
     ./install-copilot-language-server
     platform=$([ "%{_arch}" = "x86_64" ] && echo "arm64" || echo "x64")
-    for f in darwin win32 $platform; do find . -name $f -exec rm -rf {} +; done
+    for f in darwin win32 $platform; do find . -name "*$f*" -exec rm -rf {} +; done
 popd
 
 # fix error: ‘make_unique’ is not a member of ‘boost’
