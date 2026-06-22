@@ -84,7 +84,7 @@ BuildRequires:  soci-postgresql-devel, soci-sqlite3-devel
 BuildRequires:  pkgconfig(pam)
 BuildRequires:  pkgconfig(systemd)
 BuildRequires:  pkgconfig(uuid)
-BuildRequires:  pkgconfig(openssl)
+BuildRequires:  pkgconfig(openssl) < 4
 BuildRequires:  pkgconfig(fontconfig)
 BuildRequires:  rapidxml-devel
 BuildRequires:  cmake(fmt)
