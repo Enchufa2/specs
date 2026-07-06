@@ -27,11 +27,11 @@
 %global mathjax_short               27
 %global rstudio_node_version        22
 %global rstudio_version_major       2026
-%global rstudio_version_minor       05
-%global rstudio_version_patch       1
-%global rstudio_version_suffix      225
-%global rstudio_git_revision_hash   89e0c7da7b7b806fc5701ecb567f993716d8cfdc
-%global quarto_git_revision_hash    95272d691960774e76540d4a030e3aa1d8979ff6
+%global rstudio_version_minor       06
+%global rstudio_version_patch       0
+%global rstudio_version_suffix      242
+%global rstudio_git_revision_hash   d1dc28bb95f3e35b4c9d1d7536cb1da6de4d7aa7
+%global quarto_git_revision_hash    4dd070eaef675d7b72c663afeb21eec062bcfaa2
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
     export RSTUDIO_VERSION_MAJOR=%{rstudio_version_major} ; \
@@ -383,6 +383,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Mon Jul 06 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.06.0+242-1
+- Update to 2026.06.0+242
+
 * Mon Jun 22 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.05.1+225-1
 - Update to 2026.05.1+225
 

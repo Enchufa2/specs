@@ -1,14 +1,14 @@
-From 512738e610c0ef273aa80e2b5b43126ecd13ddb1 Mon Sep 17 00:00:00 2001
+From 599cfbcec56c749c401067530976509c357edab2 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?I=C3=B1aki=20=C3=9Acar?= <iucar@fedoraproject.org>
-Date: Mon, 12 Jan 2026 12:13:17 +0100
-Subject: [PATCH] asdf
+Date: Mon, 6 Jul 2026 11:12:30 +0200
+Subject: [PATCH] deps
 
 ---
- src/cpp/session/CMakeLists.txt | 77 ----------------------------------
- 1 file changed, 77 deletions(-)
+ src/cpp/session/CMakeLists.txt | 89 ----------------------------------
+ 1 file changed, 89 deletions(-)
 
 diff --git a/src/cpp/session/CMakeLists.txt b/src/cpp/session/CMakeLists.txt
-index 305345a..51745a3 100644
+index b2b8fad..398b934 100644
 --- a/src/cpp/session/CMakeLists.txt
 +++ b/src/cpp/session/CMakeLists.txt
 @@ -76,34 +76,6 @@ else()
@@ -46,7 +46,7 @@ index 305345a..51745a3 100644
  # verify embedded packages are available
  foreach(PKG ${RSTUDIO_EMBEDDED_PACKAGES})
     file(GLOB PKG_FILES "${RSTUDIO_DEPENDENCIES_DIR}/common/${PKG}*.tar.gz")
-@@ -724,55 +696,6 @@ if(NOT RSTUDIO_SESSION_WIN32 AND NOT RSESSION_ALTERNATE_BUILD)
+@@ -750,67 +722,6 @@ if(NOT RSTUDIO_SESSION_WIN32 AND NOT RSESSION_ALTERNATE_BUILD)
     install(DIRECTORY "resources/dependencies"
             DESTINATION ${RSTUDIO_INSTALL_SUPPORTING}/resources)
  
@@ -58,11 +58,23 @@ index 305345a..51745a3 100644
 -   install(DIRECTORY "${RSTUDIO_DEPENDENCIES_MATHJAX_DIR}"
 -           DESTINATION "${RSTUDIO_INSTALL_SUPPORTING}/resources")
 -
--   # install node
+-   # install node -- on Apple arm64-only builds, install-npm-dependencies
+-   # only creates "-arm64-installed"; universal builds also have the
+-   # un-suffixed "-installed" from the x86_64 primary install. Prefer the
+-   # un-suffixed folder when present so universal-build behavior is
+-   # unchanged.
+-   set(_RSTUDIO_INSTALLED_NODE_SRC
+-       "${RSTUDIO_DEPENDENCIES_DIR}/common/node/${RSTUDIO_INSTALLED_NODE_VERSION}-installed")
+-   if(APPLE AND CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64"
+-              AND NOT EXISTS "${_RSTUDIO_INSTALLED_NODE_SRC}")
+-      set(_RSTUDIO_INSTALLED_NODE_SRC
+-          "${RSTUDIO_DEPENDENCIES_DIR}/common/node/${RSTUDIO_INSTALLED_NODE_VERSION}-arm64-installed")
+-   endif()
 -   install(
--      DIRECTORY "${RSTUDIO_DEPENDENCIES_DIR}/common/node/${RSTUDIO_INSTALLED_NODE_VERSION}-installed/"
+-      DIRECTORY "${_RSTUDIO_INSTALLED_NODE_SRC}/"
 -      DESTINATION "${RSTUDIO_INSTALL_BIN}/node"
 -      USE_SOURCE_PERMISSIONS)
+-   unset(_RSTUDIO_INSTALLED_NODE_SRC)
 -
 -   # install quarto (or pandoc if quarto disabled)
 -   if(QUARTO_ENABLED)
@@ -103,5 +115,5 @@ index 305345a..51745a3 100644
     foreach(PKG ${RSTUDIO_EMBEDDED_PACKAGES})
        file(GLOB PKG_FILES "${RSTUDIO_DEPENDENCIES_DIR}/common/${PKG}*.tar.gz")
 -- 
-2.51.1
+2.54.0
 
