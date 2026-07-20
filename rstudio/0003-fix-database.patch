@@ -1,0 +1,70 @@
+From 36b12708c4fa26d8028e50eee03c01ffaa2f6a92 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?I=C3=B1aki=20=C3=9Acar?= <iucar@fedoraproject.org>
+Date: Mon, 20 Jul 2026 11:32:52 +0200
+Subject: [PATCH] fix database
+
+---
+ src/cpp/core/Database.cpp | 41 ++++++++++++++++++++++++++-------------
+ 1 file changed, 28 insertions(+), 13 deletions(-)
+
+diff --git a/src/cpp/core/Database.cpp b/src/cpp/core/Database.cpp
+index 65082fb..a757389 100644
+--- a/src/cpp/core/Database.cpp
++++ b/src/cpp/core/Database.cpp
+@@ -1579,25 +1579,40 @@ void rollbackOpenSqliteTransaction(const boost::shared_ptr<Connection>& connecti
+    if (connection->driver() != Driver::Sqlite)
+       return;
+ 
+-   auto* backend = static_cast<soci::sqlite3_session_backend*>(connection->session().get_backend());
+-   if (backend == nullptr || backend->conn_ == nullptr)
+-      return;
+-
+-   // A nonzero result means the connection is in autocommit (no open
+-   // transaction), which is the expected state - nothing to roll back.
+-   if (sqlite_api::sqlite3_get_autocommit(backend->conn_) != 0)
+-      return;
+-
+    try
+    {
++      // Attempt to start a transaction to probe the state
++      connection->session() << "BEGIN";
++
++      // If it succeeds, the connection was clean!
++      // Immediately roll back our probe transaction to restore the clean state.
+       connection->session() << "ROLLBACK";
+-      LOG_DEBUG_MESSAGE("Rolled back an open transaction before returning a "
+-                        "connection to the pool");
+    }
+    catch (const soci::soci_error& e)
+    {
+-      LOG_WARNING_MESSAGE(std::string("Failed to roll back open transaction on a "
+-                                      "pooled connection: ") + e.what());
++      std::string errorMsg = e.what();
++
++      // If it failed because a transaction was already open...
++      if (errorMsg.find("within a transaction") != std::string::npos)
++      {
++         try
++         {
++            // ...roll back the leaked transaction to clean up the connection.
++            connection->session() << "ROLLBACK";
++            LOG_DEBUG_MESSAGE("Rolled back an open transaction before returning a "
++                              "connection to the pool");
++         }
++         catch (const soci::soci_error& rollbackError)
++         {
++            LOG_WARNING_MESSAGE(std::string("Failed to roll back open transaction on a "
++                                            "pooled connection: ") + rollbackError.what());
++         }
++      }
++      else
++      {
++         // Handle genuine database errors (e.g., database locked, disk I/O errors)
++         LOG_WARNING_MESSAGE(std::string("Database error while checking transaction state: ") + errorMsg);
++      }
+    }
+ }
+ 
+-- 
+2.55.0
+

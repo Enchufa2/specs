@@ -27,11 +27,11 @@
 %global mathjax_short               27
 %global rstudio_node_version        22
 %global rstudio_version_major       2026
-%global rstudio_version_minor       06
+%global rstudio_version_minor       07
 %global rstudio_version_patch       0
-%global rstudio_version_suffix      242
-%global rstudio_git_revision_hash   d1dc28bb95f3e35b4c9d1d7536cb1da6de4d7aa7
-%global quarto_git_revision_hash    4dd070eaef675d7b72c663afeb21eec062bcfaa2
+%global rstudio_version_suffix      139
+%global rstudio_git_revision_hash   5c876cede63cf1ab4cfb57228c0f29ffb5059d9a
+%global quarto_git_revision_hash    418291e7a8a9c221255cc332437cebf215612c6d
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
     export RSTUDIO_VERSION_MAJOR=%{rstudio_version_major} ; \
@@ -69,7 +69,9 @@ Patch0:         0000-unbundle-dependencies-common.patch
 # Move resources/app to the root
 Patch1:         0001-flatten-tree.patch
 # Use system-provided nodejs binary
-Patch4:         0004-use-system-node.patch
+Patch2:         0002-use-system-node.patch
+# https://github.com/rstudio/rstudio/issues/18287
+Patch3:         0003-fix-database.patch
 
 BuildRequires:  make, cmake, ant
 BuildRequires:  gcc-c++, java-devel, R-core-devel
@@ -383,6 +385,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Mon Jul 20 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.07.0+139-1
+- Update to 2026.07.0+139
+
 * Mon Jul 06 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.06.0+242-1
 - Update to 2026.06.0+242
 

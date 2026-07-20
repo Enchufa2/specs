@@ -1,25 +1,25 @@
-From db4740f2f6c272dbeb0e66e7485f3d9c2aef20ae Mon Sep 17 00:00:00 2001
+From c89014f6328f39ba718a43526c79dfb5b6f7fd2d Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?I=C3=B1aki=20=C3=9Acar?= <iucar@fedoraproject.org>
-Date: Mon, 27 Apr 2026 16:38:13 +0200
-Subject: [PATCH] asdf
+Date: Mon, 20 Jul 2026 10:34:35 +0200
+Subject: [PATCH] node version
 
 ---
  src/gwt/build.xml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/gwt/build.xml b/src/gwt/build.xml
-index abf850e..d706978 100644
+index 401dc77..bbd7188 100644
 --- a/src/gwt/build.xml
 +++ b/src/gwt/build.xml
-@@ -233,7 +233,7 @@
+@@ -249,7 +249,7 @@
  
     <!-- panmirror typescript library -->
     <!-- ensure version matches RSTUDIO_NODE_VERSION -->
 -   <property name="node.version" value="22.22.2"/>
 +   <property name="node.version" value="22"/>
+    <set-if-exists property="node.dir" value="${env.RSTUDIO_TOOLS_ROOT}/dependencies/common/node/${node.version}"/>
     <set-if-exists property="node.dir" value="../../dependencies/common/node/${node.version}"/>
     <set-if-exists property="node.dir" value="${git.main.worktree}/dependencies/common/node/${node.version}"/>
-    <set-if-exists property="node.dir" value="/opt/rstudio-tools/dependencies/common/node/${node.version}"/>
 -- 
-2.52.0
+2.55.0
 
