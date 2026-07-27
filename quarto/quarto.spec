@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           quarto
-Version:        1.9.38
+Version:        1.10.18
 Release:        1%{?dist}
 Summary:        An open-source scientific and technical publishing system
 
@@ -9,12 +9,12 @@ License:        MIT
 URL:            https://github.com/%{name}-dev/%{name}-cli
 Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 
-Provides:       bundled(deno)      = 2.4.5
+Provides:       bundled(deno)      = 2.7.14
 Provides:       bundled(deno-dom)  = 0.1.41
-Provides:       bundled(pandoc)    = 3.8.3
-Provides:       bundled(dart-sass) = 1.87.0
-Provides:       bundled(esbuild)   = 0.25.10
-Provides:       bundled(typst)     = 0.14.2
+Provides:       bundled(pandoc)    = 3.10
+Provides:       bundled(dart-sass) = 1.101.0
+Provides:       bundled(esbuild)   = 0.28.1
+Provides:       bundled(typst)     = 0.15.1
 BuildRequires:  nodejs-npm
 BuildRequires:  cargo
 BuildRequires:  pkgconfig(openssl)
