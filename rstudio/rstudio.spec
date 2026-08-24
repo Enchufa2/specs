@@ -27,11 +27,11 @@
 %global mathjax_short               27
 %global rstudio_node_version        22
 %global rstudio_version_major       2026
-%global rstudio_version_minor       07
+%global rstudio_version_minor       08
 %global rstudio_version_patch       1
-%global rstudio_version_suffix      147
-%global rstudio_git_revision_hash   49299327da3b03a79e7aa615c2388bcd05a1261a
-%global quarto_git_revision_hash    418291e7a8a9c221255cc332437cebf215612c6d
+%global rstudio_version_suffix      195
+%global rstudio_git_revision_hash   8d474bc4cfad0e317095cd171e8ef44db6887068
+%global quarto_git_revision_hash    63eebf6039c74573f54a87edbc9d29b30d26ceab
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
     export RSTUDIO_VERSION_MAJOR=%{rstudio_version_major} ; \
@@ -70,8 +70,6 @@ Patch0:         0000-unbundle-dependencies-common.patch
 Patch1:         0001-flatten-tree.patch
 # Use system-provided nodejs binary
 Patch2:         0002-use-system-node.patch
-# https://github.com/rstudio/rstudio/issues/18287
-Patch3:         0003-fix-database.patch
 
 BuildRequires:  make, cmake, ant
 BuildRequires:  gcc-c++, java-devel, R-core-devel
@@ -152,6 +150,7 @@ Provides:       bundled(js-qunit) = %{bundled_qunitjs_version}
 Provides:       bundled(js-xterm) = %{bundled_xtermjs_version}
 Provides:       bundled(js-yaml) = %{bundled_jsyaml_version}
 Provides:       bundled(js-jsdiff) = %{bundled_jsdiff_version}
+Provides:       bundled(mathjax4) = 4
 
 %description    common %_description
 This package provides common files for %{name}-desktop and %{name}-server.
@@ -188,6 +187,7 @@ sed -i 's/::yaml-cpp//g' src/cpp/core/CMakeLists.txt
 # additional dependencies
 export RSTUDIO_TOOLS_ROOT=$PWD/dependencies/common && pushd $RSTUDIO_TOOLS_ROOT
     ./install-gwt
+    ./install-mathjax && rm -rf mathjax-27
     ./install-copilot-language-server
     platform=$([ "%{_arch}" = "x86_64" ] && echo "arm64" || echo "x64")
     for f in darwin win32 $platform; do find . -name $f -exec rm -rf {} +; done
@@ -211,7 +211,9 @@ pushd dependencies/common/node/%{rstudio_node_version}
     ln -s %{_bindir}/node-%{rstudio_node_version} bin/node
     ln -s %{_bindir}/npm-%{rstudio_node_version} bin/npm
     ln -s %{_bindir}/npx-%{rstudio_node_version} bin/npx
-    ./bin/npm install yarn && ln -s $PWD/node_modules/yarn/bin/yarn bin/yarn
+    ./bin/npm install --prefix "$PWD" --no-save --no-package-lock yarn
+    test -x node_modules/yarn/bin/yarn
+    ln -s $PWD/node_modules/yarn/bin/yarn bin/yarn
 popd
 %{rstudio_flags}
 %cmake -Wno-dev -B build \
@@ -267,6 +269,7 @@ install -m 0644 \
     %{buildroot}%{_sysconfdir}/pam.d/%{name}
 
 # symlink the location where the bundled dependencies should be
+mv dependencies/common/mathjax-4 %{buildroot}%{_libexecdir}/%{name}/resources
 mv dependencies/common/copilot-language-server-js %{buildroot}%{_libexecdir}/%{name}/bin
 pushd %{buildroot}%{_libexecdir}/%{name}/bin
     mkdir -p pandoc
@@ -385,6 +388,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Mon Aug 24 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.08.1+195-1
+- Update to 2026.08.1+195
+
 * Mon Jul 27 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.07.1+147-1
 - Update to 2026.07.1+147
 

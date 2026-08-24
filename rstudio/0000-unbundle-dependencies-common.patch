@@ -1,23 +1,24 @@
-From 599cfbcec56c749c401067530976509c357edab2 Mon Sep 17 00:00:00 2001
+From fc8ec5af3e08aa40f12c6db2bca1c89cbf1af05b Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?I=C3=B1aki=20=C3=9Acar?= <iucar@fedoraproject.org>
-Date: Mon, 6 Jul 2026 11:12:30 +0200
-Subject: [PATCH] deps
+Date: Mon, 24 Aug 2026 12:01:40 +0200
+Subject: [PATCH] asdf
 
 ---
- src/cpp/session/CMakeLists.txt | 89 ----------------------------------
- 1 file changed, 89 deletions(-)
+ src/cpp/session/CMakeLists.txt | 94 ----------------------------------
+ 1 file changed, 94 deletions(-)
 
 diff --git a/src/cpp/session/CMakeLists.txt b/src/cpp/session/CMakeLists.txt
-index b2b8fad..398b934 100644
+index ad5612c..6c8dfd6 100644
 --- a/src/cpp/session/CMakeLists.txt
 +++ b/src/cpp/session/CMakeLists.txt
-@@ -76,34 +76,6 @@ else()
+@@ -83,35 +83,6 @@ else()
  endif()
  
  
 -# validate our dependencies exist
 -foreach(VAR RSTUDIO_DEPENDENCIES_DICTIONARIES_DIR
 -            RSTUDIO_DEPENDENCIES_MATHJAX_DIR
+-            RSTUDIO_DEPENDENCIES_MATHJAX4_DIR
 -            RSTUDIO_DEPENDENCIES_PANDOC_DIR
 -            RSTUDIO_DEPENDENCIES_QUARTO_DIR
 -            RSTUDIO_DEPENDENCIES_COPILOT_DIR)
@@ -46,7 +47,7 @@ index b2b8fad..398b934 100644
  # verify embedded packages are available
  foreach(PKG ${RSTUDIO_EMBEDDED_PACKAGES})
     file(GLOB PKG_FILES "${RSTUDIO_DEPENDENCIES_DIR}/common/${PKG}*.tar.gz")
-@@ -750,67 +722,6 @@ if(NOT RSTUDIO_SESSION_WIN32 AND NOT RSESSION_ALTERNATE_BUILD)
+@@ -807,71 +778,6 @@ if(NOT RSTUDIO_SESSION_WIN32 AND NOT RSESSION_ALTERNATE_BUILD)
     install(DIRECTORY "resources/dependencies"
             DESTINATION ${RSTUDIO_INSTALL_SUPPORTING}/resources)
  
@@ -56,6 +57,10 @@ index b2b8fad..398b934 100644
 -
 -   # install mathjax for local html preview
 -   install(DIRECTORY "${RSTUDIO_DEPENDENCIES_MATHJAX_DIR}"
+-           DESTINATION "${RSTUDIO_INSTALL_SUPPORTING}/resources")
+-
+-   # install mathjax 4 for inline latex / math previews
+-   install(DIRECTORY "${RSTUDIO_DEPENDENCIES_MATHJAX4_DIR}"
 -           DESTINATION "${RSTUDIO_INSTALL_SUPPORTING}/resources")
 -
 -   # install node -- on Apple arm64-only builds, install-npm-dependencies
@@ -115,5 +120,5 @@ index b2b8fad..398b934 100644
     foreach(PKG ${RSTUDIO_EMBEDDED_PACKAGES})
        file(GLOB PKG_FILES "${RSTUDIO_DEPENDENCIES_DIR}/common/${PKG}*.tar.gz")
 -- 
-2.54.0
+2.55.0
 
