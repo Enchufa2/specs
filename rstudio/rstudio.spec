@@ -27,11 +27,11 @@
 %global mathjax_short               27
 %global rstudio_node_version        22
 %global rstudio_version_major       2026
-%global rstudio_version_minor       09
+%global rstudio_version_minor       10
 %global rstudio_version_patch       0
-%global rstudio_version_suffix      174
-%global rstudio_git_revision_hash   870df5ed7859c758db7aed6f510a3edca3c74bd7
-%global quarto_git_revision_hash    828ae28e53b796fb95a33bd7f3c7c109e0709649
+%global rstudio_version_suffix      233
+%global rstudio_git_revision_hash   e961c6137d92315437caf5af53959f7110b517f9
+%global quarto_git_revision_hash    2d5a23d918079ce38f584a31b4639aa769379d64
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
     export RSTUDIO_VERSION_MAJOR=%{rstudio_version_major} ; \
@@ -87,6 +87,7 @@ BuildRequires:  pkgconfig(uuid)
 BuildRequires:  pkgconfig(libsecret-1)
 BuildRequires:  pkgconfig(openssl) < 4
 BuildRequires:  pkgconfig(fontconfig)
+BuildRequires:  pkgconfig(libacl)
 BuildRequires:  rapidxml-devel
 BuildRequires:  cmake(fmt)
 BuildRequires:  cmake(gsl-lite)
@@ -387,6 +388,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Thu Oct 22 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.10.0+233-1
+- Update to 2026.10.0+233
+
 * Mon Sep 14 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.09.0+174-1
 - Update to 2026.09.0+174
 
