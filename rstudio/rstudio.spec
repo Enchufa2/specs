@@ -1,4 +1,4 @@
-%global bundled_gwt_version         2.12.2
+%global bundled_gwt_version         2.13.1
 %global bundled_websockets_version  1.0.4
 %global bundled_gin_version         2.1.2
 %global bundled_guava_version       32.1.3
@@ -25,13 +25,13 @@
 %global bundled_jsyaml_version      5.0.2
 %global bundled_jsdiff_version      8.0.2
 %global mathjax_short               27
-%global rstudio_node_version        22
+%global rstudio_node_version        24
 %global rstudio_version_major       2026
-%global rstudio_version_minor       10
-%global rstudio_version_patch       1
-%global rstudio_version_suffix      239
-%global rstudio_git_revision_hash   0b06695c24e10f6de6b9166c35ae24804c21f95f
-%global quarto_git_revision_hash    2d5a23d918079ce38f584a31b4639aa769379d64
+%global rstudio_version_minor       11
+%global rstudio_version_patch       0
+%global rstudio_version_suffix      203
+%global rstudio_git_revision_hash   187ef1689bea1e8a4724e478a23ad8d390678d0f
+%global quarto_git_revision_hash    42bcd0ab39d90a449c7816bd423506d2cff94fd4
 %global rstudio_version             %{rstudio_version_major}.%{rstudio_version_minor}.%{rstudio_version_patch}
 %global rstudio_flags \
     export RSTUDIO_VERSION_MAJOR=%{rstudio_version_major} ; \
@@ -68,8 +68,6 @@ Source2:        %{name}.metainfo.xml
 Patch0:         0000-unbundle-dependencies-common.patch
 # Move resources/app to the root
 Patch1:         0001-flatten-tree.patch
-# Use system-provided nodejs binary
-Patch2:         0002-use-system-node.patch
 
 BuildRequires:  make, cmake, ant
 BuildRequires:  gcc-c++, java-devel, R-core-devel
@@ -205,6 +203,8 @@ sed -i '37i #include <boost/asio/deadline_timer.hpp>' src/cpp/core/system/PosixC
 sed -i '24i #include <boost/asio/deadline_timer.hpp>' src/cpp/session/SessionConsoleProcessSocketTests.cpp
 
 %build
+sed '/property name="node.version"/s|.*|<property name="node.version" value="%{rstudio_node_version}"/>|' \
+    -i src/gwt/build.xml
 mkdir -p dependencies/common/node/%{rstudio_node_version}/bin
 export PATH="$PWD/dependencies/common/node/%{rstudio_node_version}/bin:$PATH"
 pushd dependencies/common/node/%{rstudio_node_version}
@@ -355,8 +355,6 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %attr(0755,root,root) %{_libexecdir}/%{name}/chrome-sandbox
 %attr(0755,root,root) %{_libexecdir}/%{name}/chrome_crashpad_handler
 %{_libexecdir}/%{name}/icudtl.dat
-%attr(0755,root,root) %{_libexecdir}/%{name}/libEGL.so
-%attr(0755,root,root) %{_libexecdir}/%{name}/libGLESv2.so
 %attr(0755,root,root) %{_libexecdir}/%{name}/libffmpeg.so
 %attr(0755,root,root) %{_libexecdir}/%{name}/libvk_swiftshader.so
 %attr(0755,root,root) %{_libexecdir}/%{name}/libvulkan.so.1
@@ -388,6 +386,9 @@ chown -R %{name}-server:%{name}-server %{_sharedstatedir}/%{name}-server
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog
+* Mon Nov 16 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.11.0+203-1
+- Update to 2026.11.0+203
+
 * Tue Nov 03 2026 Iñaki Úcar <iucar@fedoraproject.org> - 2026.10.1+239-1
 - Update to 2026.10.1+239
 
